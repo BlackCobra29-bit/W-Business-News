@@ -1,0 +1,306 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% url 'article-management-view' as article_management_url %}
+    {% url 'write-article-view' as write_article_url %}
+    {% url 'update-article-view' article.pk as update_article_url %}
+
+    <link href="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.css" rel="stylesheet">
+    <link href="/static/froala_editor/css/froala_editor.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/froala_style.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/froala-django.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/themes/dark.min.css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/char_counter.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/code_view.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/colors.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/draggable.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/emoticons.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/file.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/fullscreen.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/image_manager.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/image.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/line_breaker.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/quick_insert.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/table.min.css" type="text/css" media="all" rel="stylesheet">
+    <link href="/static/froala_editor/css/plugins/video.min.css" type="text/css" media="all" rel="stylesheet">
+    <script src="/static/admin/js/vendor/jquery/jquery.js"></script>
+    <script src="/static/froala_editor/js/froala_editor.min.js"></script>
+    <script src="/static/admin/js/calendar.js"></script>
+    <script src="/static/admin/js/jquery.init.js"></script>
+    <script src="/static/froala_editor/js/froala-django.js"></script>
+    <script src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+    <script src="/static/admin/js/core.js"></script>
+    <script src="/static/froala_editor/js/plugins/align.min.js"></script>
+    <script src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+    <script src="/static/froala_editor/js/plugins/char_counter.min.js"></script>
+    <script src="/static/admin/js/actions.js"></script>
+    <script src="/static/froala_editor/js/plugins/code_beautifier.min.js"></script>
+    <script src="/static/admin/js/urlify.js"></script>
+    <script src="/static/froala_editor/js/plugins/code_view.min.js"></script>
+    <script src="/static/admin/js/prepopulate.js"></script>
+    <script src="/static/froala_editor/js/plugins/colors.min.js"></script>
+    <script src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+    <script src="/static/froala_editor/js/plugins/draggable.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/emoticons.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/entities.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/file.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/font_family.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/font_size.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/fullscreen.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/image_manager.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/image.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/inline_style.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/line_breaker.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/link.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/lists.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/paragraph_format.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/paragraph_style.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/quick_insert.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/quote.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/save.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/table.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/url.min.js"></script>
+    <script src="/static/froala_editor/js/plugins/video.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wahid Business News</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'admin_statics/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_statics/iconly/bold.css' %}">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/perfect-scrollbar/1.5.6/css/perfect-scrollbar.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'admin_statics/main.css' %}">
+
+    {% if request.path == article_management_url %}
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css" rel="stylesheet">
+    {% endif %}
+
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class="active">
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+                    <div class="d-flex justify-content-between">
+                        <div class="toggler">
+                            <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+                        <li class="sidebar-title">Menu</li>
+                        <li class="sidebar-item {% if request.resolver_match.url_name == 'admin-index-view' %}active{% endif %}"
+                            hx-target="#main-content" hx-swap="innerHTML" hx-on:click="activateMenu(this)">
+                            <a href="{% url 'admin-index-view' %}" class='sidebar-link'>
+                                <i class="bi bi-grid-fill"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li
+                            class="sidebar-item {% if request.resolver_match.url_name == 'write-article-view' %}active{% endif %}">
+                            <a href="{% url 'write-article-view' %}" class='sidebar-link'>
+                                <i class="bi bi-pen-fill"></i>
+                                <span>Write Article</span>
+                            </a>
+                        </li>
+                        <li
+                            class="sidebar-item {% if request.resolver_match.url_name == 'article-management-view' %}active{% endif %}">
+                            <a href="{% url 'article-management-view' %}" class='sidebar-link'>
+                                <i class="bi bi-pass-fill"></i>
+                                <span>Article Management</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="index.html" class='sidebar-link'>
+                                <i class="bi bi-people-fill"></i>
+                                <span>Blog Followers</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="index.html" class='sidebar-link'>
+                                <i class="bi bi-gear-fill"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="index.html" class='sidebar-link'>
+                                <i class="bi bi-person-badge-fill"></i>
+                                <span>Admins</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="index.html" class='sidebar-link'>
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+
+        <div id="main">
+            <div id="main-content">
+                {% block 'main-page-content' %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/perfect-scrollbar/1.5.6/perfect-scrollbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'admin_statics/main.js' %}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#write-article-form').parsley();
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#write-article-form').submit(function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "{% url 'write-article-view' %}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        $('#loadingIndicator').show();
+                    },
+                    success: function (response) {
+                        $('#loadingIndicator').hide();
+
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                confirmButtonText: 'OK',
+                                timer: 3000
+                            });
+
+                            $('#write-article-form')[0].reset(); // Reset the form
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: response.message,
+                                confirmButtonText: 'Try Again'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#loadingIndicator').hide();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while submitting. Please try again.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    {% if update_article_url %}
+    <script>
+        $(document).ready(function () {
+            $('#update-article-form').submit(function (e) {
+                e.preventDefault();
+    
+                var formData = new FormData(this);
+                var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+    
+                $.ajax({
+                    url: "{% url 'update-article-view' article.slug %}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: { "X-CSRFToken": csrfToken },
+                    beforeSend: function () {
+                        $('#loadingIndicator').show();
+                    },
+                    success: function (response) {
+                        $('#loadingIndicator').hide();
+    
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated!',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "{% url 'article-management-view' %}";
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#loadingIndicator').hide();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    
+    {% endif %}
+
+    {% if request.path == article_management_url %}
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#articleDataTable').DataTable({
+                responsive: true
+            });
+        });
+    </script>
+    {% endif %}
+
+    <script>
+        const toolbar = document.querySelector('.fr-toolbar.fr-desktop.fr-top.fr-basic.fr-sticky-off');
+        if (toolbar) {
+            toolbar.classList.add('dark-theme');
+        }
+    </script>
+
+</body>
+
+</html>

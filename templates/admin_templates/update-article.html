@@ -1,0 +1,95 @@
+{% extends 'admin_templates/base.html' %}
+{% load static %}
+{% block 'main-page-content' %}
+
+<header class="mb-3">
+    <a href="#" class="burger-btn d-block d-xl-none">
+        <i class="bi bi-justify fs-3"></i>
+    </a>
+</header>
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Update Article</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'admin-index-view' %}" hx-get="{% url 'admin-index-view' %}"
+                                hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Write Article</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Rest of your write-article content remains the same -->
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="update-article-form" data-parsley-validate="" method="POST"
+                            enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.title.label_tag }}
+                                {{ form.title }}
+                            </div>
+                            <div class="form-group pt-4">
+                                {{ form.content.label_tag }}
+                                {{ form.content }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.thumbnail.label_tag }}
+                                {{ form.thumbnail }}
+                            </div>
+                            <div class="form-group pt-5 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Keep all other sections as they are -->
+</div>
+
+<style>
+    .parsley-errors-list {
+        color: red;
+        list-style-type: none;
+        padding-left: 0;
+        font-size: 0.875rem;
+    }
+
+    .parsley-error {
+        border-color: red;
+    }
+
+    #loadingIndicator {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+    }
+</style>
+
+<div id="loadingIndicator">
+    <img src="{% static 'images/Spinner-loading.gif' %}" alt="Loading...">
+</div>
+
+<!-- hide some default froala elements -->
+<style>
+    #fr-logo {
+        display: none;
+    }
+</style>
+{% endblock %}
