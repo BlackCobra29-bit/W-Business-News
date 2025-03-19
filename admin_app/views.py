@@ -1,12 +1,13 @@
 from .models import Article
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import UpdateView
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from .forms import Article_form
@@ -15,34 +16,62 @@ from captcha.fields import CaptchaField
 
 class CaptchaTestForm(forms.Form):
     captcha = CaptchaField()
+    
+class AuthRequiredMixin(LoginRequiredMixin):
+    login_url = "/admin-auth/?next=not-authenticated"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(self.login_url)
+        return super().dispatch(request, *args, **kwargs)
 
 class AdminAuthentication(TemplateView):
     template_name = "admin_templates/login.html"
 
+    def get(self, request, *args, **kwargs):
+        
+        if request.user.is_authenticated:
+            
+            return redirect("write-article-view")
+            
+        captcha_key = CaptchaStore.generate_key()
+        captcha_image = captcha_image_url(captcha_key)
+
+        return self.render_to_response({
+            "captcha_image": captcha_image,
+            "captcha_key": captcha_key
+        })
+
     def post(self, request, *args, **kwargs):
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        username = request.POST.get("login_username")
+        password = request.POST.get("login_password")
+        captcha_key = request.POST.get("captcha_0")
+        captcha_value = request.POST.get("captcha_1")
 
-        # Validate CAPTCHA
-        captcha_form = CaptchaTestForm(request.POST)
-        if not captcha_form.is_valid():
-            return render(request, self.template_name, {"error": "Invalid CAPTCHA", "captcha_form": captcha_form})
+        try:
+            captcha_obj = CaptchaStore.objects.get(hashkey=captcha_key)
+            if captcha_obj.response.lower() != captcha_value.lower():
+                messages.error(request, "Invalid CAPTCHA.")
+                return self.redirect_with_query_params(request, "invalid-captcha")
+        except CaptchaStore.DoesNotExist:
+            messages.error(request, "Invalid CAPTCHA.")
+            return self.redirect_with_query_params(request, "invalid-captcha")
 
-        # Authenticate User
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("dashboard")  # Change to your dashboard URL
+            return redirect("write-article-view")
         else:
-            return render(request, self.template_name, {"error": "Invalid credentials", "captcha_form": captcha_form})
+            messages.error(request, "Invalid username or password.")
+            return render(request, self.template_name)
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {"captcha_form": CaptchaTestForm()})
+    def redirect_with_query_params(self, request, error_type):
+        return redirect(f"{reverse('admin-auth-view')}?error={error_type}")
 
-class AdminIndex(TemplateView):
+class AdminIndex(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/index.html"
     
-class WriteArticle(TemplateView):
+class WriteArticle(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/write_article.html"
 
     def post(self, request, *args, **kwargs):
@@ -61,7 +90,7 @@ class WriteArticle(TemplateView):
         context['form'] = Article_form()
         return context
     
-class ArticleManagement(TemplateView):
+class ArticleManagement(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/article-management.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -72,7 +101,7 @@ class ArticleManagement(TemplateView):
         context['articles'] = articles
         return context
     
-class UpdateArticle(UpdateView):
+class UpdateArticle(AuthRequiredMixin, UpdateView):
     model = Article
     form_class = Article_form
     template_name = "admin_templates/update-article.html"
@@ -100,7 +129,7 @@ class UpdateArticle(UpdateView):
         context['form'] = self.form_class(instance=self.get_object())
         return context
     
-class DeleteArticleView(View):
+class DeleteArticleView(AuthRequiredMixin, View):
     def delete(self, request, slug):
         try:
             article = Article.objects.get(slug=slug)
