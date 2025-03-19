@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{% static 'admin_statics/bootstrap.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{% static 'admin_statics/main.css' %}">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body style="background-color: white;">
@@ -20,12 +22,7 @@
             <div class="col-12 d-flex justify-content-center align-items-center">
                 <div id="auth-left" class="card shadow-sm border rounded p-4">
                     <h2 class="auth-title text-center mb-4">Wahid Business News</h2>
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-danger">{{ message }}</div>
-                    {% endfor %}
-                    {% endif %}
-                    <form method="POST">
+                    <form id="login-form">
                         {% csrf_token %}
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="text" name="login_username" class="form-control form-control-x"
@@ -50,15 +47,80 @@
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-primary btn-block shadow-lg mt-3">Log in</button>
+                            <button type="submit" class="btn btn-primary btn-block shadow-lg mt-3">Log in</button>
                         </div>
                     </form>
                 </div>
-
             </div>
         </div>
 
     </div>
+
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
+
+    <style>
+        #loadingIndicator {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+    </style>
+
+    <div id="loadingIndicator">
+        <img src="{% static 'images/Spinner-loading.gif' %}" alt="Loading...">
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function (e) {
+            e.preventDefault();  
+
+            document.getElementById("loadingIndicator").style.display = "block";
+
+            let formData = new FormData(this);
+
+            fetch("{% url 'admin-auth-view' %}", {
+                method: "POST",
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("loadingIndicator").style.display = "none";
+
+                    if (data.error) {
+                        Toastify({
+                            text: data.error,
+                            duration: 2000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc3a0)",
+                            stopOnFocus: true
+                        }).showToast();
+                    } else if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("loadingIndicator").style.display = "none";
+
+                    Toastify({
+                        text: "An error occurred. Please try again.",
+                        duration: 5000,
+                        close: true,
+                        gravity: "top",
+                        position: "top",
+                        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc3a0)",
+                        stopOnFocus: true
+                    }).showToast();
+                });
+        });
+    </script>
+
+
 </body>
 
 </html>

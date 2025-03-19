@@ -4,13 +4,16 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import UpdateView
 from django.views import View
+from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import PasswordChangeView
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
-from .forms import Article_form
+from django.contrib.auth.models import User
+from .forms import Article_form, UserModelForm, CustomPasswordChangeForm
 from django import forms
 from captcha.fields import CaptchaField
 
@@ -29,11 +32,9 @@ class AdminAuthentication(TemplateView):
     template_name = "admin_templates/login.html"
 
     def get(self, request, *args, **kwargs):
-        
         if request.user.is_authenticated:
-            
-            return redirect("write-article-view")
-            
+            return redirect("admin-index-view")
+        
         captcha_key = CaptchaStore.generate_key()
         captcha_image = captcha_image_url(captcha_key)
 
@@ -51,25 +52,24 @@ class AdminAuthentication(TemplateView):
         try:
             captcha_obj = CaptchaStore.objects.get(hashkey=captcha_key)
             if captcha_obj.response.lower() != captcha_value.lower():
-                messages.error(request, "Invalid CAPTCHA.")
-                return self.redirect_with_query_params(request, "invalid-captcha")
+                return JsonResponse({"error": "Invalid CAPTCHA."}, status=400)
         except CaptchaStore.DoesNotExist:
-            messages.error(request, "Invalid CAPTCHA.")
-            return self.redirect_with_query_params(request, "invalid-captcha")
+            return JsonResponse({"error": "Invalid CAPTCHA."}, status=400)
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("write-article-view")
+            return JsonResponse({"redirect": reverse("admin-index-view")})
         else:
-            messages.error(request, "Invalid username or password.")
-            return render(request, self.template_name)
-
-    def redirect_with_query_params(self, request, error_type):
-        return redirect(f"{reverse('admin-auth-view')}?error={error_type}")
+            return JsonResponse({"error": "Invalid username or password."}, status=400)
 
 class AdminIndex(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['article_count'] = Article.objects.aggregate(count=Count('id'))['count']
+        return context
     
 class WriteArticle(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/write_article.html"
@@ -137,3 +137,36 @@ class DeleteArticleView(AuthRequiredMixin, View):
             return JsonResponse({"success": True, "message": "Article deleted successfully!"})
         except Article.DoesNotExist:
             return JsonResponse({"success": False, "message": "Article not found!"})
+        
+class AccountSettings(AuthRequiredMixin, TemplateView):
+    template_name = "admin_templates/settings.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.request.user
+        context["form"] = UserModelForm(instance=self.request.user)
+        context["password_form"] = CustomPasswordChangeForm(user=self.request.user)  # 👈 Pass the password form
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = UserModelForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"success": True, "message": "Account information updated successfully!"})
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({"success": False, "message": "There was an error updating the account details.", "errors": errors})
+
+class PasswordAdminUpdateView(AuthRequiredMixin, PasswordChangeView):
+    form_class = CustomPasswordChangeForm
+    template_name = 'admin_templates/update-password.html'
+    success_url = reverse_lazy('admin-index-view')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Password updated successfully!')
+        return super().form_valid(form)
+
+class LogoutView(AuthRequiredMixin, View):
+    def get(self, request):
+        logout(request)
+        return redirect(f"{reverse('admin-auth-view')}?logged_out_successfully=true")

@@ -126,20 +126,22 @@
                                 <span>Blog Followers</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="index.html" class='sidebar-link'>
+                        <li class="sidebar-item {% if request.resolver_match.url_name == 'account-settings-view' or request.resolver_match.url_name == 'password-update-view' %}active{% endif %} has-sub">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-gear-fill"></i>
                                 <span>Settings</span>
                             </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item {% if request.resolver_match.url_name == 'account-settings-view' %}active{% endif %}">
+                                    <a href="{% url 'account-settings-view' %}">Account Details</a>
+                                </li>
+                                <li class="submenu-item {% if request.resolver_match.url_name == 'password-update-view' %}active{% endif %}">
+                                    <a href="{% url 'password-update-view' %}">Password Settings</a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="sidebar-item">
-                            <a href="index.html" class='sidebar-link'>
-                                <i class="bi bi-person-badge-fill"></i>
-                                <span>Admins</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="index.html" class='sidebar-link'>
+                            <a onclick="confirmLogout()" class='sidebar-link'>
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sign Out</span>
                             </a>
@@ -229,10 +231,10 @@
         $(document).ready(function () {
             $('#update-article-form').submit(function (e) {
                 e.preventDefault();
-    
+
                 var formData = new FormData(this);
                 var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
-    
+
                 $.ajax({
                     url: "{% url 'update-article-view' article.slug %}",
                     type: "POST",
@@ -245,7 +247,7 @@
                     },
                     success: function (response) {
                         $('#loadingIndicator').hide();
-    
+
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -279,8 +281,84 @@
             });
         });
     </script>
-    
     {% endif %}
+
+    <!-- Account Settings Update -->
+    <script>
+        $(document).ready(function () {
+            $('#update-account-form').submit(function (e) {
+                e.preventDefault();
+    
+                var formData = new FormData(this);
+                var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+    
+                $.ajax({
+                    url: "{% url 'account-settings-view' %}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: { "X-CSRFToken": csrfToken },
+                    beforeSend: function () {
+                        $('#loadingIndicator').show();
+                    },
+                    success: function (response) {
+                        $('#loadingIndicator').hide();
+    
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated!',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#loadingIndicator').hide();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    <!-- end of account settings ajax -->
+
+    <!-- swal for logout -->
+    <script>
+        function confirmLogout() {
+            Swal.fire({
+                title: "Are you sure?",
+                text: `Are you sure you want to signout?`,
+                showCancelButton: true,
+                confirmButtonColor: "#7066e0",
+                cancelButtonColor: "#d33",
+                confirmButtonText:
+                    'Continue <span class="fa fa-arrow-right"></span> ',
+                cancelButtonText: "Cancel",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement("form");
+                    form.action = `{% url 'logout-view' %}`;
+                    form.innerHTML = `{% csrf_token %}`;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    </script>
 
     {% if request.path == article_management_url %}
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
