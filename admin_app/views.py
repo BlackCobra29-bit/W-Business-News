@@ -169,4 +169,4 @@ class PasswordAdminUpdateView(AuthRequiredMixin, PasswordChangeView):
 class LogoutView(AuthRequiredMixin, View):
     def get(self, request):
         logout(request)
-        return redirect(f"{reverse('admin-auth-view')}?logged_out_successfully=true")
+        return redirect(f"{reverse('admin-auth-view')}?logged_out_successfully=true"),

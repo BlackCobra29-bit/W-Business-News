@@ -5,19 +5,32 @@ from django.contrib.auth.forms import PasswordChangeForm
 from froala_editor.widgets import FroalaEditor
 
 class Article_form(forms.ModelForm):
+    NEWS_TYPES = [
+        ('diesel_vehicle', 'Diesel Vehicle'),
+        ('electric_vehicle', 'Electric Vehicle'),
+        ('banks_financial', 'Banks & Financial'),
+        ('logistics_transport', 'Logistics and Transport'),
+    ]
+
+    news_type = forms.ChoiceField(
+        choices=NEWS_TYPES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True
+    )
+
     class Meta:
         model = Article
-        fields = ['title', 'content', 'thumbnail']
+        fields = ['title', 'content', 'thumbnail', 'news_type']
         widgets = {
             'title': forms.TextInput(
-            attrs={
-                'class': 'form-control position-relative',
-                'placeholder': 'Article title',
-                'data-parsley-trigger': 'change',
-                'required': 'required',
-                'id': 'title-icon'
-            }
-        ),
+                attrs={
+                    'class': 'form-control position-relative',
+                    'placeholder': 'Article title',
+                    'data-parsley-trigger': 'change',
+                    'required': 'required',
+                    'id': 'title-icon'
+                }
+            ),
             'content': FroalaEditor(),
         }
 
@@ -26,6 +39,7 @@ class Article_form(forms.ModelForm):
         self.fields['title'].label = 'Title'
         self.fields['content'].label = 'Content'
         self.fields['thumbnail'].label = 'Thumbnail'
+        self.fields['news_type'].label = 'News Type'
 
 class UserModelForm(forms.ModelForm):
     class Meta:
