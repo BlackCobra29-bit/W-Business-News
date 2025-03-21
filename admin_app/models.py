@@ -14,10 +14,10 @@ def thumbnail_upload_to(instance, filename):
 
 class Article(models.Model):
     NEWS_TYPES = [
-        ('diesel_vehicle', 'Diesel Vehicle'),
-        ('electric_vehicle', 'Electric Vehicle'),
-        ('banks_financial', 'Banks & Financial'),
-        ('logistics_transport', 'Logistics and Transport'),
+        ('Diesel Vehicle', 'Diesel Vehicle'),
+        ('Electric Vehicle', 'Electric Vehicle'),
+        ('Banks & Financial', 'Banks & Financial'),
+        ('Logistics and Transport', 'Logistics and Transport'),
     ]
 
     title = models.CharField(max_length=200)

@@ -2325,7 +2325,7 @@
   }
   
   .blog-posts .post-category {
-    font-size: 16px;
+    font-size: 14px;
     color: color-mix(in srgb, var(--default-color), transparent 40%);
     margin-bottom: 10px;
   }
@@ -2360,7 +2360,7 @@
   }
   
   .blog-posts .post-date {
-    font-size: 14px;
+    font-size: 13px;
     color: color-mix(in srgb, var(--default-color), transparent 40%);
     margin-bottom: 0;
   }
@@ -2912,4 +2912,11 @@
     padding-left: 5px;
     color: color-mix(in srgb, var(--default-color), transparent 60%);
     font-size: 14px;
+  }
+
+  .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #c84022;
+    border-color: #c84022;
   }

@@ -6,10 +6,10 @@ from froala_editor.widgets import FroalaEditor
 
 class Article_form(forms.ModelForm):
     NEWS_TYPES = [
-        ('diesel_vehicle', 'Diesel Vehicle'),
-        ('electric_vehicle', 'Electric Vehicle'),
-        ('banks_financial', 'Banks & Financial'),
-        ('logistics_transport', 'Logistics and Transport'),
+        ('Diesel Vehicle', 'Diesel Vehicle'),
+        ('Electric Vehicle', 'Electric Vehicle'),
+        ('Banks & Financial', 'Banks & Financial'),
+        ('Logistics and Transport', 'Logistics and Transport'),
     ]
 
     news_type = forms.ChoiceField(
