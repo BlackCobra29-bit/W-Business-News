@@ -6,12 +6,12 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Blog - Impact Bootstrap Template</title>
+    <title>Wahid Business News</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
     <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon">
+    <link href="{% static 'images/mobile-view-logo.png' %}" rel="icon">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Fonts -->
@@ -32,20 +32,42 @@
         <div class="branding d-flex align-items-cente">
 
             <div class="container position-relative d-flex align-items-center justify-content-between">
-                <a href="index.html" class="logo d-flex align-items-center">
+                <a href="{% url 'user-index-view' %}" class="logo d-flex align-items-center">
                     <img src="{% static 'images/mobile-view-logo.png' %}" alt="">
                 </a>
 
                 <nav id="navmenu" class="navmenu">
                     <ul>
-                        <li><a href="#hero" class="fw-bold">Home<br></a></li>
-                        <li><a href="#about" class="fw-bold">Diesel vehicle</a></li>
-                        <li><a href="#services" class="fw-bold">Electric vehicle</a>
+                        <li>
+                            <a href="{% url 'user-index-view' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'user-index-view' %}active{% endif %}">
+                                Home
+                            </a>
                         </li>
-                        <li><a href="#portfolio" class="fw-bold">Banks
-                                & Financial</a></li>
-                        <li><a href="#team" class="fw-bold">Logistics
-                                and Transport</a></li>
+                        <li>
+                            <a href="{% url 'diesel-vehicles-view' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'diesel-vehicles-view' %}active{% endif %}">
+                                Diesel Vehicle
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'electric-vehicles-view' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'electric-vehicles-view' %}active{% endif %}">
+                                Electric Vehicle
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'banks-financial-view' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'banks-financial-view' %}active{% endif %}">
+                                Banks & Financial
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logistics-transport-view' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'logistics-transport-view' %}active{% endif %}">
+                                Logistics and Transport
+                            </a>
+                        </li>
                     </ul>
                     <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
@@ -62,13 +84,14 @@
 
     <footer id="footer" class="footer accent-background">
         <div class="container copyright text-center mt-4">
-            <p>© <span>Copyright</span> <strong class="px-1 sitename">Wahid Business News</strong> <span>All Rights Reserved</span></p>
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">Wahid Business News</strong> <span>All Rights
+                    Reserved</span></p>
             <div class="credits">
                 Developed by <a href="https://bootstrapmade.com/">Tesfahiwet Truneh</a>
             </div>
         </div>
     </footer>
-    
+
 
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i

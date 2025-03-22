@@ -9,135 +9,119 @@
     <section id="blog-posts" class="blog-posts section mt-5">
 
         <div class="container">
-            <div class="row gy-4">
+            <div class="row">
 
-                {% for article in articles %}
-                <div class="col-lg-3">
-                    <article class="news-article">
-                        <div class="post-img">
-                            <img src="{{ article.thumbnail.url }}" alt="" class="img-fluid">
+                <div class="row">
+                    <div class="col-lg-8 mt-5">
+                        <div class="row">
+                            {% for article in articles %}
+                            <div class="col-lg-4">
+                                <article class="news-article">
+                                    <div class="post-img">
+                                        <img src="{{ article.thumbnail.url }}" alt="" class="img-fluid">
+                                    </div>
+                                    <p class="post-category">{{ article.news_type }}</p>
+                                    <h2 class="title">
+                                        <a href="#" data-bs-toggle="modal"
+                                            data-bs-target="#articleModal{{ article.id }}">
+                                            {{ article.title }}</a>
+                                    </h2>
+                                    <div class="post-meta d-flex align-items-center">
+                                        <p class="post-date">
+                                            <time datetime="{{ article.created_at|date:'Y-m-d' }}">
+                                                <span class="bi bi-clock"></span> {{ article.created_at|date:'M d, Y' }}
+                                            </time>
+                                        </p>
+                                    </div>
+                                </article>
+                            </div>
+
+                            <div class="modal fade" id="articleModal{{ article.id }}" tabindex="-1"
+                                aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-dark">
+                                            <h6 class="modal-title text-white text-center"
+                                                id="articleModalLabel{{ article.id }}">
+                                                {{ article.title }}
+                                            </h6>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{ article.content|safe }}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endfor %}
                         </div>
-                        <p class="post-category">{{ article.news_type }}</p>
-                        <h2 class="title">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#articleModal{{ article.id }}">
-                                {{ article.title }}</a>
-                        </h2>
-                        <div class="post-meta d-flex align-items-center">
-                            <p class="post-date">
-                                <time datetime="{{ article.created_at|date:'Y-m-d' }}">
-                                    <span class="bi bi-clock"></span> {{ article.created_at|date:'M d, Y' }}
-                                </time>
+                    </div>
+
+
+                    <div class="col-lg-4">
+                        <div class="widgets-container border border-1 border-dark rounded text-center">
+                            <h5 class="fw-bold text-primary mb-3"><i class="bi bi-envelope-fill"></i> Subscribe to Our
+                                Newsletter</h5>
+                            <p class="text-muted mb-3 text-dark">Stay updated with the latest news and exclusive offers.
                             </p>
-                        </div>
-                    </article>
-                </div>
 
-                <div class="modal fade" id="articleModal{{ article.id }}" tabindex="-1"
-                    aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-dark">
-                                <h6 class="modal-title text-white text-center" id="articleModalLabel{{ article.id }}">
-                                    {{ article.title }}
-                                </h6>
-                            </div>
-                            <div class="modal-body">
-                                {{ article.content|safe }}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <form action="" method="POST" class="input-group">
+                                <input type="email" class="form-control border border-primary rounded-start"
+                                    placeholder="Enter your email" required>
+                                <button class="btn btn-primary px-4 rounded-end" type="submit" title="Subscribe">
+                                    <i class="bi bi-envelope-fill"></i> Subscribe
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="widgets-container">
+                            <div class="recent-posts-widget widget-item">
+                                <h3 class="widget-title">Old Posts</h3>
+                                {% for article in old_articles %}
+                                <div class="post-item">
+                                    <img src="{{ article.thumbnail.url }}" alt="" class="flex-shrink-0"
+                                        style="height: 100%;">
+                                    <div>
+                                        <h4><a href="#" data-bs-toggle="modal"
+                                                data-bs-target="#articleModal{{ article.id }}">{{ article.title }}</a>
+                                        </h4>
+                                        <time style="font-style: normal;"
+                                            datetime="{{ article.created_at|date:'Y-m-d' }}">
+                                            <span class="bi bi-clock"></span> {{ article.created_at|date:'M d, Y' }}
+                                        </time>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="articleModal{{ article.id }}" tabindex="-1"
+                                    aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-dark">
+                                                <h6 class="modal-title text-white text-center"
+                                                    id="articleModalLabel{{ article.id }}">
+                                                    {{ article.title }}
+                                                </h6>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{ article.content|safe }}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {% endfor %}
-
-                {% for article in articles %}
-                <div class="col-lg-3">
-                    <article class="news-article">
-                        <div class="post-img">
-                            <img src="{{ article.thumbnail.url }}" alt="" class="img-fluid">
-                        </div>
-                        <p class="post-category">{{ article.news_type }}</p>
-                        <h2 class="title">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#articleModal{{ article.id }}">
-                                {{ article.title }}</a>
-                        </h2>
-                        <div class="post-meta d-flex align-items-center">
-                            <p class="post-date">
-                                <time datetime="{{ article.created_at|date:'Y-m-d' }}">
-                                    <span class="bi bi-clock"></span> {{ article.created_at|date:'M d, Y' }}
-                                </time>
-                            </p>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="modal fade" id="articleModal{{ article.id }}" tabindex="-1"
-                    aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-dark">
-                                <h6 class="modal-title text-white text-center" id="articleModalLabel{{ article.id }}">
-                                    {{ article.title }}
-                                </h6>
-                            </div>
-                            <div class="modal-body">
-                                {{ article.content|safe }}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {% endfor %}
-
-
-                {% for article in articles %}
-                <div class="col-lg-3">
-                    <article class="news-article">
-                        <div class="post-img">
-                            <img src="{{ article.thumbnail.url }}" alt="" class="img-fluid">
-                        </div>
-                        <p class="post-category">{{ article.news_type }}</p>
-                        <h2 class="title">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#articleModal{{ article.id }}">
-                                {{ article.title }}</a>
-                        </h2>
-                        <div class="post-meta d-flex align-items-center">
-                            <p class="post-date">
-                                <time datetime="{{ article.created_at|date:'Y-m-d' }}">
-                                    <span class="bi bi-clock"></span> {{ article.created_at|date:'M d, Y' }}
-                                </time>
-                            </p>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="modal fade" id="articleModal{{ article.id }}" tabindex="-1"
-                    aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-dark">
-                                <h6 class="modal-title text-white text-center" id="articleModalLabel{{ article.id }}">
-                                    {{ article.title }}
-                                </h6>
-                            </div>
-                            <div class="modal-body">
-                                {{ article.content|safe }}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {% endfor %}
-
             </div>
         </div>
 
@@ -149,33 +133,35 @@
             <div class="d-flex justify-content-center">
                 <ul class="pagination">
                     {% if articles.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1&next_post=true">&laquo; First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ articles.previous_page_number }}&next_post=true">Previous</a>
-                        </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1&next_post=true">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?page={{ articles.previous_page_number }}&next_post=true">Previous</a>
+                    </li>
                     {% endif %}
 
                     {% for page_num in articles.paginator.page_range %}
-                        {% if articles.number == page_num %}
-                            <li class="page-item active">
-                                <span class="page-link">{{ page_num }}</span>
-                            </li>
-                        {% else %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_num }}&next_post=true">{{ page_num }}</a>
-                            </li>
-                        {% endif %}
+                    {% if articles.number == page_num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_num }}&next_post=true">{{ page_num }}</a>
+                    </li>
+                    {% endif %}
                     {% endfor %}
 
                     {% if articles.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ articles.next_page_number }}&next_post=true">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ articles.paginator.num_pages }}&next_post=true">Last &raquo;</a>
-                        </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ articles.next_page_number }}&next_post=true">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ articles.paginator.num_pages }}&next_post=true">Last
+                            &raquo;</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
