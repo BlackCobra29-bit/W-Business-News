@@ -4,10 +4,18 @@ from django.utils.text import slugify
 from PIL import Image
 from froala_editor.fields import FroalaField
 
-from django.db import models
-from django.utils import timezone
-from PIL import Image
-from froala_editor.fields import FroalaField
+class Website(models.Model):
+    name = models.CharField(max_length=100, default="Wahid Business News")
+
+    def __str__(self):
+        return self.name
+
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
 
 def thumbnail_upload_to(instance, filename):
     return f'thumbnails/{filename[:100]}'

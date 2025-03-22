@@ -39,10 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'captcha',
+    'hitcount',
     'froala_editor',
     'App',
     'admin_app'
 ]
+
+HITCOUNT_KEEP_HIT_ACTIVE = {'minutes': 30}
 
 CAPTCHA_FONT_SIZE = 40
 CAPTCHA_IMAGE_SIZE = (150, 50)

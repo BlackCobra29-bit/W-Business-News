@@ -1,10 +1,10 @@
-from .models import Article
+from .models import Article, Subscriber
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import UpdateView
 from django.views import View
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
@@ -16,6 +16,7 @@ from django.contrib.auth.models import User
 from .forms import Article_form, UserModelForm, CustomPasswordChangeForm
 from django import forms
 from captcha.fields import CaptchaField
+from hitcount.models import HitCount
 
 class CaptchaTestForm(forms.Form):
     captcha = CaptchaField()
@@ -69,6 +70,10 @@ class AdminIndex(AuthRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['article_count'] = Article.objects.aggregate(count=Count('id'))['count']
+        total_hits = HitCount.objects.aggregate(total=Sum('hits'))['total'] or 0
+        context['total_pageviews'] = total_hits
+        total_subscribers = Subscriber.objects.count()
+        context['total_subscribers'] = total_subscribers
         return context
     
 class WriteArticle(AuthRequiredMixin, TemplateView):

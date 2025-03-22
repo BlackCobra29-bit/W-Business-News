@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('froala_editor/',include('froala_editor.urls')),
     path('captcha/', include('captcha.urls')),
+    path('hitcount/', include('hitcount.urls', namespace='hitcount')),
     # User URLs
     path("", UserIndex.as_view(), name="user-index-view"),
     path("diesel-vehicles-news/", Dieselvehicles.as_view(), name="diesel-vehicles-view"),
