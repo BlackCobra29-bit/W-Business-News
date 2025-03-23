@@ -11,6 +11,7 @@
         <div class="container">
             <div class="row mt-5">
 
+                {% if articles %}
                 {% for article in articles %}
                 <div class="col-lg-3">
                     <article class="news-article" data-aos="fade-right">
@@ -51,7 +52,14 @@
                     </div>
                 </div>
                 {% endfor %}
-
+                {% else %}
+                <!-- No Articles Found Message -->
+                <div class="d-flex flex-column align-items-center justify-content-center text-center my-5">
+                    <i class="bi bi-exclamation-circle display-4 text-danger"></i>
+                    <h4 class="text-muted mt-2">No Articles Found</h4>
+                    <p class="text-secondary">We couldn't find any articles at the moment. Please check back later.</p>
+                </div>
+                {% endif %}
             </div>
         </div>
 

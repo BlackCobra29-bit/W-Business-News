@@ -30,7 +30,7 @@ class UserIndex(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         article_list = Article.objects.only('id', 'title', 'content', 'created_at').order_by("-created_at")
-        paginator = Paginator(article_list, 3)
+        paginator = Paginator(article_list, 9)
         page = self.request.GET.get('page')
         try:
             articles = paginator.page(page)
