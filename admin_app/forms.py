@@ -14,7 +14,13 @@ class Article_form(forms.ModelForm):
 
     news_type = forms.ChoiceField(
         choices=NEWS_TYPES,
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=forms.Select(
+            attrs={
+                'class': 'form-select select2',
+                'id': 'single-select-field',
+                'data-placeholder': 'Choose one thing'
+            }
+        ),
         required=True
     )
 

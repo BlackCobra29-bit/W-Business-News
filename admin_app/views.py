@@ -143,6 +143,14 @@ class DeleteArticleView(AuthRequiredMixin, View):
         except Article.DoesNotExist:
             return JsonResponse({"success": False, "message": "Article not found!"})
         
+class SubscriberList(AuthRequiredMixin, TemplateView):
+    template_name = "admin_templates/subscriber-list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subscribers'] = Subscriber.objects.all()
+        return context
+        
 class AccountSettings(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/settings.html"
 
@@ -174,4 +182,4 @@ class PasswordAdminUpdateView(AuthRequiredMixin, PasswordChangeView):
 class LogoutView(AuthRequiredMixin, View):
     def get(self, request):
         logout(request)
-        return redirect(f"{reverse('admin-auth-view')}?logged_out_successfully=true"),
+        return redirect(f"{reverse('admin-auth-view')}?logged_out_successfully=true")
