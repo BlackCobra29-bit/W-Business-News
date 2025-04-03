@@ -2,14 +2,19 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from django.views import View
 from django.http import JsonResponse
-from admin_app.models import Article
+from admin_app.models import Article, ResourcesModel
 from admin_app.models import Subscriber
-from admin_app.models import Website
+from admin_app.models import Website, MainMenu
 from hitcount.views import HitCountMixin
 from hitcount.models import HitCount
 
+class MenuMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['main_menus'] = MainMenu.objects.prefetch_related('submenus').all()
+        return context
 
-class UserIndex(TemplateView):
+class UserIndex(MenuMixin, TemplateView):
     template_name = "index.html"
     
     def post(self, request, *args, **kwargs):
@@ -41,8 +46,8 @@ class UserIndex(TemplateView):
         context["old_articles"] = old_articles
         return context
 
-class Dieselvehicles(TemplateView):
-    template_name = "page-specfic.html"
+class NewsByCategoryView(MenuMixin, TemplateView):
+    template_name = 'page-specfic.html'
 
     def get(self, request, *args, **kwargs):
         website = Website.objects.get(name="Wahid Business News")
@@ -52,39 +57,17 @@ class Dieselvehicles(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        article_list = Article.objects.filter(news_type="Diesel Vehicle").only('id', 'title', 'content', 'created_at').order_by("-created_at")
-        paginator = Paginator(article_list, 1)
-        page = self.request.GET.get('page')
-        try:
-            articles = paginator.page(page)
-        except (PageNotAnInteger, EmptyPage):
-            articles = paginator.page(1)
-        context["articles"] = articles
+        news_type = self.kwargs['news_type']
+        business_articles = Article.objects.filter(news_type=news_type).order_by('-created_at')
+
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(business_articles, 15)
+        context['business_articles'] = paginator.get_page(page)
+
         return context
-
-class Electricvehicles(TemplateView):
-    template_name = "page-specfic.html"
-
-    def get(self, request, *args, **kwargs):
-        website = Website.objects.get(name="Wahid Business News")
-        hit_count = HitCount.objects.get_for_object(website)
-        HitCountMixin.hit_count(request, hit_count)
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        article_list = Article.objects.filter(news_type="Electric Vehicle").only('id', 'title', 'content', 'created_at').order_by("-created_at")
-        paginator = Paginator(article_list, 1)
-        page = self.request.GET.get('page')
-        try:
-            articles = paginator.page(page)
-        except (PageNotAnInteger, EmptyPage):
-            articles = paginator.page(1)
-        context["articles"] = articles
-        return context
-
-class BanksFinancial(TemplateView):
-    template_name = "page-specfic.html"
+    
+class DisplayResourceItems(MenuMixin, TemplateView):
+    template_name = "display-resources.html"
 
     def get(self, request, *args, **kwargs):
         website = Website.objects.get(name="Wahid Business News")
@@ -94,33 +77,10 @@ class BanksFinancial(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        article_list = Article.objects.filter(news_type="Banks & Financial").only('id', 'title', 'content', 'created_at').order_by("-created_at")
-        paginator = Paginator(article_list, 4)
-        page = self.request.GET.get('page')
-        try:
-            articles = paginator.page(page)
-        except (PageNotAnInteger, EmptyPage):
-            articles = paginator.page(1)
-        context["articles"] = articles
-        return context
+        resources_list = ResourcesModel.objects.all().order_by('-created_at')
 
-class LogisticsTransport(TemplateView):
-    template_name = "page-specfic.html"
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(resources_list, 15)
+        context['resource_list'] = paginator.get_page(page)
 
-    def get(self, request, *args, **kwargs):
-        website = Website.objects.get(name="Wahid Business News")
-        hit_count = HitCount.objects.get_for_object(website)
-        HitCountMixin.hit_count(request, hit_count)
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        article_list = Article.objects.filter(news_type="Logistics and Transport").only('id', 'title', 'content', 'created_at').order_by("-created_at")
-        paginator = Paginator(article_list, 4)
-        page = self.request.GET.get('page')
-        try:
-            articles = paginator.page(page)
-        except (PageNotAnInteger, EmptyPage):
-            articles = paginator.page(1)
-        context["articles"] = articles
         return context

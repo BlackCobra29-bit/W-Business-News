@@ -1,19 +1,12 @@
 from django import forms
-from .models import Article
+from .models import Article, ResourcesModel
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from froala_editor.widgets import FroalaEditor
 
 class Article_form(forms.ModelForm):
-    NEWS_TYPES = [
-        ('Diesel Vehicle', 'Diesel Vehicle'),
-        ('Electric Vehicle', 'Electric Vehicle'),
-        ('Banks & Financial', 'Banks & Financial'),
-        ('Logistics and Transport', 'Logistics and Transport'),
-    ]
 
     news_type = forms.ChoiceField(
-        choices=NEWS_TYPES,
         widget=forms.Select(
             attrs={
                 'class': 'form-select select2',
@@ -46,6 +39,17 @@ class Article_form(forms.ModelForm):
         self.fields['content'].label = 'Content'
         self.fields['thumbnail'].label = 'Thumbnail'
         self.fields['news_type'].label = 'News Type'
+        self.fields['news_type'].choices = self.Meta.model._meta.get_field('news_type').choices
+
+class ResourcesForm(forms.ModelForm):
+    class Meta:
+        model = ResourcesModel
+        fields = ['resource_name', 'short_description', 'resource_file']
+        widgets = {
+            'resource_name': forms.TextInput(attrs={"class": "form-control", "placeholder": "Resource Name", "required": "required"}),
+            'short_description': forms.Textarea(attrs={"class": "form-control", "placeholder": "Short Description", "rows": 3, "required": "required"}),
+            'resource_file': forms.FileInput(attrs={"class": "form-control", "required": "required"}),
+        }
 
 class UserModelForm(forms.ModelForm):
     class Meta:

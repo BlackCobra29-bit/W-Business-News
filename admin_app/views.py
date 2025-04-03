@@ -13,7 +13,7 @@ from django.contrib.auth.views import PasswordChangeView
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.contrib.auth.models import User
-from .forms import Article_form, UserModelForm, CustomPasswordChangeForm
+from .forms import Article_form , ResourcesForm, UserModelForm, CustomPasswordChangeForm
 from django import forms
 from captcha.fields import CaptchaField
 from hitcount.models import HitCount
@@ -142,6 +142,25 @@ class DeleteArticleView(AuthRequiredMixin, View):
             return JsonResponse({"success": True, "message": "Article deleted successfully!"})
         except Article.DoesNotExist:
             return JsonResponse({"success": False, "message": "Article not found!"})
+        
+class AddResources(AuthRequiredMixin, TemplateView):
+    template_name = "admin_templates/add_resources.html"
+
+    def post(self, request, *args, **kwargs):
+        form = ResourcesForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                article = form.save()
+                return JsonResponse({"success": True, "message": "Resource item added successfully!"})
+            except Exception as e:
+                return JsonResponse({"success": False, "message": str(e)}, status=500)
+        else:
+            return JsonResponse({"success": False, "message": "Invalid form data", "errors": form.errors}, status=400)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = ResourcesForm()
+        return context
         
 class SubscriberList(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/subscriber-list.html"

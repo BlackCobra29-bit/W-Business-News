@@ -136,6 +136,20 @@
                                 <span>Article Management</span>
                             </a>
                         </li>
+                        <li class="sidebar-item {% if request.resolver_match.url_name == 'add-resources' or request.resolver_match.url_name == 'password-update-view' %}active{% endif %} has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                                <span>Resources</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item {% if request.resolver_match.url_name == 'add-resources' %}active{% endif %}">
+                                    <a href="{% url 'add-resources' %}">Add Resource</a>
+                                </li>
+                                <li class="submenu-item {% if request.resolver_match.url_name == 'password-update-view' %}active{% endif %}">
+                                    <a href="{% url 'password-update-view' %}">Password Settings</a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="sidebar-item {% if request.resolver_match.url_name == 'blog-followers' %}active{% endif %}">
                             <a href="{% url 'blog-followers' %}" class='sidebar-link'>
                                 <i class="bi bi-people-fill"></i>
@@ -204,6 +218,12 @@
 
     <script>
         $(document).ready(function () {
+            $('#add-product-form').parsley();
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
             $('#write-article-form').submit(function (e) {
                 e.preventDefault(); // Prevent default form submission
 
@@ -230,7 +250,7 @@
                                 timer: 3000
                             });
 
-                            $('#write-article-form')[0].reset(); // Reset the form
+                            $('#write-article-form')[0].reset();
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -363,6 +383,58 @@
         });
     </script>
     <!-- end of account settings ajax -->
+
+    <script>
+        $(document).ready(function () {
+            $('#add-product-form').submit(function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "{% url 'add-resources' %}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        $('#loadingIndicator').show();
+                    },
+                    success: function (response) {
+                        $('#loadingIndicator').hide();
+
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                confirmButtonText: 'OK',
+                                timer: 3000
+                            });
+
+                            $('#add-product-form')[0].reset();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: response.message,
+                                confirmButtonText: 'Try Again'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#loadingIndicator').hide();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while submitting. Please try again.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
     <!-- swal for logout -->
     <script>
