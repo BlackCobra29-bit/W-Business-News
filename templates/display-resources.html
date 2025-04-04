@@ -23,7 +23,7 @@
 
                 {% if resource_list %}
                 {% for resource in resource_list %}
-                <div class="result-item mt-3 border rounded p-3 shadow-sm bg-white">
+                <div class="result-item mt-3 border rounded p-3 shadow-sm bg-light">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h6 class="mb-1 blog-title">
@@ -69,18 +69,18 @@
         <div class="container">
             <div class="d-flex justify-content-center">
                 <ul class="pagination">
-                    {% if articles.has_previous %}
+                    {% if resource_list.has_previous %}
                     <li class="page-item">
                         <a class="page-link" href="?page=1&next_post=true">&laquo; First</a>
                     </li>
                     <li class="page-item">
                         <a class="page-link"
-                            href="?page={{ articles.previous_page_number }}&next_post=true">Previous</a>
+                            href="?page={{ resource_list.previous_page_number }}&next_post=true">Previous</a>
                     </li>
                     {% endif %}
 
-                    {% for page_num in articles.paginator.page_range %}
-                    {% if articles.number == page_num %}
+                    {% for page_num in resource_list.paginator.page_range %}
+                    {% if resource_list.number == page_num %}
                     <li class="page-item active">
                         <span class="page-link">{{ page_num }}</span>
                     </li>
@@ -91,12 +91,12 @@
                     {% endif %}
                     {% endfor %}
 
-                    {% if articles.has_next %}
+                    {% if resource_list.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ articles.next_page_number }}&next_post=true">Next</a>
+                        <a class="page-link" href="?page={{ resource_list.next_page_number }}&next_post=true">Next</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ articles.paginator.num_pages }}&next_post=true">Last
+                        <a class="page-link" href="?page={{ resource_list.paginator.num_pages }}&next_post=true">Last
                             &raquo;</a>
                     </li>
                     {% endif %}

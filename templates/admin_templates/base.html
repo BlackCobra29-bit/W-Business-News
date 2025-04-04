@@ -136,7 +136,7 @@
                                 <span>Article Management</span>
                             </a>
                         </li>
-                        <li class="sidebar-item {% if request.resolver_match.url_name == 'add-resources' or request.resolver_match.url_name == 'password-update-view' %}active{% endif %} has-sub">
+                        <li class="sidebar-item {% if request.resolver_match.url_name == 'add-resources' or request.resolver_match.url_name == 'document-management-view' %}active{% endif %} has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-file-earmark-pdf-fill"></i>
                                 <span>Resources</span>
@@ -145,8 +145,8 @@
                                 <li class="submenu-item {% if request.resolver_match.url_name == 'add-resources' %}active{% endif %}">
                                     <a href="{% url 'add-resources' %}">Add Resource</a>
                                 </li>
-                                <li class="submenu-item {% if request.resolver_match.url_name == 'password-update-view' %}active{% endif %}">
-                                    <a href="{% url 'password-update-view' %}">Password Settings</a>
+                                <li class="submenu-item {% if request.resolver_match.url_name == 'document-management-view' %}active{% endif %}">
+                                    <a href="{% url 'document-management-view' %}">Document Management</a>
                                 </li>
                             </ul>
                         </li>

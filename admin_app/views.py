@@ -1,4 +1,4 @@
-from .models import Article, Subscriber
+from .models import Article, ResourcesModel, Subscriber
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
@@ -74,6 +74,8 @@ class AdminIndex(AuthRequiredMixin, TemplateView):
         context['total_pageviews'] = total_hits
         total_subscribers = Subscriber.objects.count()
         context['total_subscribers'] = total_subscribers
+        total_resources = ResourcesModel.objects.count()
+        context['total_resources'] = total_resources
         return context
     
 class WriteArticle(AuthRequiredMixin, TemplateView):
@@ -160,6 +162,45 @@ class AddResources(AuthRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = ResourcesForm()
+        return context
+    
+class DocumentManagement(AuthRequiredMixin, TemplateView):
+    template_name = "admin_templates/resources-management.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        resources = ResourcesModel.objects.only('id', 'resource_name', 'short_description', 'created_at').all()
+
+        context['resources'] = resources
+        return context
+    
+class UpdateResource(AuthRequiredMixin, UpdateView):
+    model = ResourcesModel
+    form_class = ResourcesForm
+    template_name = "admin_templates/update-resource.html"
+    success_url = reverse_lazy('document-management-view')
+
+    def get_object(self, queryset=None):
+        id = self.kwargs.get("pk")
+        return get_object_or_404(ResourcesModel, id=id)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, request.FILES, instance=self.object)
+
+        if form.is_valid():
+            try:
+                article = form.save()
+                return JsonResponse({"success": True, "message": "Resource updated successfully!"})
+            except Exception as e:
+                return JsonResponse({"success": False, "message": str(e)}, status=500)
+        else:
+            return JsonResponse({"success": False, "message": "Invalid form data", "errors": form.errors}, status=400)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class(instance=self.get_object())
         return context
         
 class SubscriberList(AuthRequiredMixin, TemplateView):

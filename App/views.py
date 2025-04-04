@@ -80,7 +80,7 @@ class DisplayResourceItems(MenuMixin, TemplateView):
         resources_list = ResourcesModel.objects.all().order_by('-created_at')
 
         page = self.request.GET.get('page', 1)
-        paginator = Paginator(resources_list, 15)
+        paginator = Paginator(resources_list, 10)
         context['resource_list'] = paginator.get_page(page)
 
         return context

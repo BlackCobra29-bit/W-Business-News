@@ -12,7 +12,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Article Management</h3>
+                <h3>Document Management</h3>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -21,7 +21,7 @@
                             <a href="{% url 'admin-index-view' %}" hx-get="{% url 'admin-index-view' %}"
                                 hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Article Management</li>
+                        <li class="breadcrumb-item active" aria-current="page">Document Management</li>
                     </ol>
                 </nav>
             </div>
@@ -38,25 +38,23 @@
                             <thead>
                                 <tr>
                                     <th>Index</th>
-                                    <th>Title</th>
-                                    <th>Category</th>
+                                    <th>Reousrce Title</th>
                                     <th>Created At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for article in articles %}
-                                <tr data-slug="{{ article.slug }}">
+                                {% for resource in resources %}
+                                <tr data-slug="{{ resource.slug }}">
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ article.title|slice:30 }}...</td>
-                                    <td>{{ article.news_type }}</td>
-                                    <td>{{ article.created_at|date:"j M Y" }}</td>
+                                    <td>{{ resource.resource_name }}</td>
+                                    <td>{{ resource.created_at|date:"j M Y" }}</td>
                                     <td>
-                                        <a href="{% url 'update-article-view' article.slug %}"
+                                        <a href="{% url 'update-resource-view' resource.id %}"
                                             class="btn btn-primary btn-sm"><i class="bi bi-pen"></i> Edit</a>
                                             {% csrf_token %}
                                             <a href="#" class="btn btn-danger btn-sm delete-btn"
-                                                data-slug="{{ article.slug }}">
+                                                data-slug="{{ resource.id }}">
                                                 <i class="bi bi-trash"></i> Delete
                                             </a>
                                     </td>

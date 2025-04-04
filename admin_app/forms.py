@@ -48,7 +48,6 @@ class ResourcesForm(forms.ModelForm):
         widgets = {
             'resource_name': forms.TextInput(attrs={"class": "form-control", "placeholder": "Resource Name", "required": "required"}),
             'short_description': forms.Textarea(attrs={"class": "form-control", "placeholder": "Short Description", "rows": 3, "required": "required"}),
-            'resource_file': forms.FileInput(attrs={"class": "form-control", "required": "required"}),
         }
 
 class UserModelForm(forms.ModelForm):
