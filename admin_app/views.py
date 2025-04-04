@@ -182,7 +182,7 @@ class UpdateResource(AuthRequiredMixin, UpdateView):
     success_url = reverse_lazy('document-management-view')
 
     def get_object(self, queryset=None):
-        id = self.kwargs.get("pk")
+        id = self.kwargs.get("id")
         return get_object_or_404(ResourcesModel, id=id)
 
     def post(self, request, *args, **kwargs):
@@ -191,7 +191,7 @@ class UpdateResource(AuthRequiredMixin, UpdateView):
 
         if form.is_valid():
             try:
-                article = form.save()
+                resource = form.save()
                 return JsonResponse({"success": True, "message": "Resource updated successfully!"})
             except Exception as e:
                 return JsonResponse({"success": False, "message": str(e)}, status=500)
@@ -202,6 +202,15 @@ class UpdateResource(AuthRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form_class(instance=self.get_object())
         return context
+    
+class DeleteResourceView(AuthRequiredMixin, View):
+    def delete(self, request, slug):
+        try:
+            article = ResourcesModel.objects.get(slug=slug)
+            article.delete()
+            return JsonResponse({"success": True, "message": "Resource deleted successfully!"})
+        except ResourcesModel.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Resource not found!"})
         
 class SubscriberList(AuthRequiredMixin, TemplateView):
     template_name = "admin_templates/subscriber-list.html"

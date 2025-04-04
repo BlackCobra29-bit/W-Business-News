@@ -7,6 +7,7 @@
     {% url 'article-management-view' as article_management_url %}
     {% url 'write-article-view' as write_article_url %}
     {% url 'update-article-view' article.pk as update_article_url %}
+    {% url 'update-resource-view' resource.id as update_resource_url %}
     {% url 'blog-followers' as blog_followers %}
 
     <link href="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.css" rel="stylesheet">
@@ -136,7 +137,7 @@
                                 <span>Article Management</span>
                             </a>
                         </li>
-                        <li class="sidebar-item {% if request.resolver_match.url_name == 'add-resources' or request.resolver_match.url_name == 'document-management-view' %}active{% endif %} has-sub">
+                        <li class="sidebar-item {% if request.resolver_match.url_name == 'add-resources' or request.resolver_match.url_name == 'document-management-view' or request.resolver_match.url_name == 'update-resource-view' %}active{% endif %} has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-file-earmark-pdf-fill"></i>
                                 <span>Resources</span>
@@ -330,6 +331,65 @@
         });
     </script>
     {% endif %}
+
+    <!-- Update resource -->
+    {% if update_resource_url %}
+    <script>
+        $(document).ready(function () {
+            $('#update-resource-form').submit(function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+                var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+
+                $.ajax({
+                    url: "{% url 'update-resource-view' resource.id %}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: { "X-CSRFToken": csrfToken },
+                    beforeSend: function () {
+                        $('#loadingIndicator').show();
+                    },
+                    success: function (response) {
+                        $('#loadingIndicator').hide();
+
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated!',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "{% url 'document-management-view' %}";
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#loadingIndicator').hide();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    {% endif %}
+    <!-- end of script -->
 
     <!-- Account Settings Update -->
     <script>

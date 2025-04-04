@@ -82,7 +82,7 @@
     $(document).ready(function () {
         $(".delete-btn").click(function (e) {
             e.preventDefault();
-            var slug = $(this).data('slug');
+            var id = $(this).data('id');
 
             Swal.fire({
                 icon: 'question',
@@ -97,7 +97,7 @@
                     var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
 
                     $.ajax({
-                        url: "{% url 'delete-article-view' 'slug' %}".replace('slug', slug),
+                        url: "{% url 'delete-resource-view' 'id' %}".replace('id', id),
                         type: "DELETE",
                         headers: {
                             "X-CSRFToken": csrfToken
@@ -110,7 +110,7 @@
                                     text: response.message,
                                     confirmButtonText: 'OK'
                                 }).then(() => {
-                                    $('tr[data-slug="' + slug + '"]').remove();
+                                    $('tr[data-id="' + id + '"]').remove();
                                 });
                             } else {
                                 Swal.fire({

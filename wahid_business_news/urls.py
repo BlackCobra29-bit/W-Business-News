@@ -4,7 +4,7 @@ from App.views import UserIndex, NewsByCategoryView, DisplayResourceItems
 from django.conf import settings
 from froala_editor import views
 from django.conf.urls.static import static
-from admin_app.views import AdminAuthentication, AdminIndex, WriteArticle, ArticleManagement, UpdateArticle, DeleteArticleView, AddResources, DocumentManagement , UpdateResource, SubscriberList, AccountSettings, PasswordAdminUpdateView, LogoutView
+from admin_app.views import AdminAuthentication, AdminIndex, WriteArticle, ArticleManagement, UpdateArticle, DeleteArticleView, AddResources, DocumentManagement , UpdateResource, DeleteResourceView, SubscriberList, AccountSettings, PasswordAdminUpdateView, LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,7 +24,8 @@ urlpatterns = [
     path('<slug:slug>/delete-article/', DeleteArticleView.as_view(), name='delete-article-view'),
     path('add-resources/', AddResources.as_view(), name = 'add-resources'),
     path("document-management/", DocumentManagement.as_view(), name="document-management-view"),
-    path("<int:pk>/update-resource/", UpdateResource.as_view(), name="update-resource-view"),
+    path("<int:id>/update-resource/", UpdateResource.as_view(), name="update-resource-view"),
+    path('<int:id>/delete-resource/', DeleteResourceView.as_view(), name='delete-resource-view'),
     path('blog-followers/', SubscriberList.as_view(), name = 'blog-followers'),
     path('account-settings/', AccountSettings.as_view(), name='account-settings-view'),
     path('update-password/', PasswordAdminUpdateView.as_view(), name='password-update-view'),
