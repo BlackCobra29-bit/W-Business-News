@@ -1335,26 +1335,31 @@ a {
     }
 
 /* Custom Styles */
-.parsley-errors-list {
-  color: red;
-  list-style-type: none;
-  padding-left: 0;
-  font-size: 0.875rem;
-}
+  .parsley-errors-list {
+    color: red;
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 0.875rem;
+  }
 
-.parsley-error {
-  border-color: red;
-}
+  .parsley-error {
+    border-color: red;
+  }
 
-#loadingIndicator {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  /* Ensure it's above other elements */
-}
-#fr-logo {
-  display: none;
-}
+  #loadingIndicator {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    /* Ensure it's above other elements */
+  }
+
+  .errorlist{
+      color: red;
+  }
+
+  #fr-logo {
+    display: none;
+  }

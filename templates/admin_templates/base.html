@@ -80,7 +80,9 @@
     <link rel="stylesheet" href="{% static 'admin_statics/main.css' %}">
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">   
+    <script type="module" src="https://unpkg.com/theme-toggle@0.1.5/dist/theme-toggle.js"
+      crossorigin="anonymous"></script>
     <style>
         .select2-container .select2-selection--single {
             height: 38px;
@@ -116,20 +118,20 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-
-                        <li
-                            class="sidebar-item {% if request.resolver_match.url_name == 'write-article-view' %}active{% endif %}">
-                            <a href="{% url 'write-article-view' %}" class='sidebar-link'>
+                        
+                        <li class="sidebar-item {% if request.resolver_match.url_name == 'write-article-view' or request.resolver_match.url_name == 'article-management-view' %}active{% endif %} has-sub">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-pen-fill"></i>
-                                <span>Write Article</span>
+                                <span>Article</span>
                             </a>
-                        </li>
-                        <li
-                            class="sidebar-item {% if request.resolver_match.url_name == 'article-management-view' or request.resolver_match.url_name == 'update-article-view' %}active{% endif %}">
-                            <a href="{% url 'article-management-view' %}" class='sidebar-link'>
-                                <i class="bi bi-pass-fill"></i>
-                                <span>Article Management</span>
-                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item {% if request.resolver_match.url_name == 'write-article-view' %}active{% endif %}">
+                                    <a href="{% url 'write-article-view' %}">Write Article</a>
+                                </li>
+                                <li class="submenu-item {% if request.resolver_match.url_name == 'article-management-view' %}active{% endif %}">
+                                    <a href="{% url 'article-management-view' %}">Article Management</a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="sidebar-item {% if request.resolver_match.url_name == 'add-resources' or request.resolver_match.url_name == 'document-management-view' or request.resolver_match.url_name == 'update-resource-view' %}active{% endif %} has-sub">
                             <a href="#" class='sidebar-link'>
@@ -154,7 +156,7 @@
                         <li class="sidebar-item {% if request.resolver_match.url_name == 'account-settings-view' or request.resolver_match.url_name == 'password-update-view' %}active{% endif %} has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-gear-fill"></i>
-                                <span>Settings</span>
+                               <span>Settings</span>
                             </a>
                             <ul class="submenu ">
                                 <li class="submenu-item {% if request.resolver_match.url_name == 'account-settings-view' %}active{% endif %}">
@@ -169,6 +171,11 @@
                             <a onclick="confirmLogout()" class='sidebar-link'>
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sign Out</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a  class='sidebar-link'id='themeToggleLink'>
+                                <theme-toggle storable="true" width="20" theme="light"></theme-toggle>&nbsp Mode
                             </a>
                         </li>
                     </ul>

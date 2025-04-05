@@ -90,7 +90,8 @@
 
                         <div class="widgets-container">
                             <div class="recent-posts-widget widget-item">
-                                <h3 class="widget-title">Old Posts</h3>
+                                <h3 class="widget-title"><span class="bi bi-clock-history"></span> Old Posts</h3>
+                                {% if old_articles %}
                                 {% for article in old_articles %}
                                 <div class="post-item">
                                     <img src="{{ article.thumbnail.url }}" alt="" class="flex-shrink-0"
@@ -127,7 +128,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                {% endfor %}
+                                {% endfor %} 
+                                {% else %}
+                                <code>
+                                    No old articles found!</code>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

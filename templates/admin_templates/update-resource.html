@@ -60,36 +60,7 @@
     <!-- Keep all other sections as they are -->
 </div>
 
-<style>
-    .parsley-errors-list {
-        color: red;
-        list-style-type: none;
-        padding-left: 0;
-        font-size: 0.875rem;
-    }
-
-    .parsley-error {
-        border-color: red;
-    }
-
-    #loadingIndicator {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-    }
-</style>
-
 <div id="loadingIndicator">
     <img src="{% static 'images/Spinner-loading.gif' %}" alt="Loading...">
 </div>
-
-<!-- hide some default froala elements -->
-<style>
-    #fr-logo {
-        display: none;
-    }
-</style>
 {% endblock %}
