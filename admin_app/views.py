@@ -204,9 +204,9 @@ class UpdateResource(AuthRequiredMixin, UpdateView):
         return context
     
 class DeleteResourceView(AuthRequiredMixin, View):
-    def delete(self, request, slug):
+    def delete(self, request, id):
         try:
-            article = ResourcesModel.objects.get(slug=slug)
+            article = ResourcesModel.objects.get(id=id)
             article.delete()
             return JsonResponse({"success": True, "message": "Resource deleted successfully!"})
         except ResourcesModel.DoesNotExist:

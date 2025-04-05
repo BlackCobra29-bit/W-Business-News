@@ -54,7 +54,7 @@
                                             class="btn btn-primary btn-sm"><i class="bi bi-pen"></i> Edit</a>
                                             {% csrf_token %}
                                             <a href="#" class="btn btn-danger btn-sm delete-btn"
-                                                data-slug="{{ resource.id }}">
+                                                data-url="{% url 'delete-resource-view' resource.id %}">
                                                 <i class="bi bi-trash"></i> Delete
                                             </a>
                                     </td>
@@ -82,7 +82,9 @@
     $(document).ready(function () {
         $(".delete-btn").click(function (e) {
             e.preventDefault();
-            var id = $(this).data('id');
+
+            var url = $(this).data('url');
+            var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
 
             Swal.fire({
                 icon: 'question',
@@ -94,10 +96,8 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
-
                     $.ajax({
-                        url: "{% url 'delete-resource-view' 'id' %}".replace('id', id),
+                        url: url,
                         type: "DELETE",
                         headers: {
                             "X-CSRFToken": csrfToken
@@ -110,7 +110,7 @@
                                     text: response.message,
                                     confirmButtonText: 'OK'
                                 }).then(() => {
-                                    $('tr[data-id="' + id + '"]').remove();
+                                    $(e.target).closest('tr').remove();
                                 });
                             } else {
                                 Swal.fire({
@@ -121,7 +121,7 @@
                                 });
                             }
                         },
-                        error: function (xhr, status, error) {
+                        error: function () {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Server Error',
@@ -135,4 +135,5 @@
         });
     });
 </script>
+
 {% endblock %}

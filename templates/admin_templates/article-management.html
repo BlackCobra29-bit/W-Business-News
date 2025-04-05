@@ -112,7 +112,7 @@
                                     text: response.message,
                                     confirmButtonText: 'OK'
                                 }).then(() => {
-                                    $('tr[data-slug="' + slug + '"]').remove();
+                                    $('tr[data-url="' + url + '"]').remove();
                                 });
                             } else {
                                 Swal.fire({
