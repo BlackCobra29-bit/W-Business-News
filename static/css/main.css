@@ -2920,7 +2920,7 @@
   }
 
   .active {
-    color: white !important;
+    color: green;
     border-radius: 5px;
     padding: 5px 10px;
 }
