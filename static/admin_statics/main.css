@@ -1159,7 +1159,7 @@
   padding: 0;
 }
 #main #main-content {
-  padding: 2rem;
+  padding: 0rem;
 }
 .page-heading {
   margin: 0 0 2rem;
@@ -1308,4 +1308,53 @@ a {
   #auth #auth-left {
     padding: 5rem;
   }
+}
+
+.parsley-errors-list {
+        color: red;
+        list-style-type: none;
+        padding-left: 0;
+        font-size: 0.875rem;
+    }
+
+    .parsley-error {
+        border-color: red;
+    }
+
+    #loadingIndicator {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        /* Ensure it's above other elements */
+    }
+    #fr-logo {
+        display: none;
+    }
+
+/* Custom Styles */
+.parsley-errors-list {
+  color: red;
+  list-style-type: none;
+  padding-left: 0;
+  font-size: 0.875rem;
+}
+
+.parsley-error {
+  border-color: red;
+}
+
+#loadingIndicator {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  /* Ensure it's above other elements */
+}
+#fr-logo {
+  display: none;
 }

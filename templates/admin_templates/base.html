@@ -78,13 +78,8 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/perfect-scrollbar/1.5.6/css/perfect-scrollbar.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{% static 'admin_statics/main.css' %}">
-
-    {% if request.path == article_management_url or request.path == blog_followers %}
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css" rel="stylesheet">
-    {% endif %}
-
-    {% if request.path == write_article_url %}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
     <style>
         .select2-container .select2-selection--single {
@@ -97,7 +92,6 @@
             line-height: 28px;
         }
     </style>
-    {% endif %}
 
 </head>
 
@@ -198,38 +192,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.min.js"></script>
-    {% if request.path == write_article_url %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            // Initialize select2
             $("#single-select-field").select2({
                 placeholder: "Choose one thing",
                 allowClear: true,
                 width: '100%'
             });
-        });
-    </script>
-    {% endif %}
-
-    <script>
-        $(document).ready(function () {
+    
+            // Initialize Parsley for forms
             $('#write-article-form').parsley();
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
             $('#add-product-form').parsley();
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
+    
+            // Handle Write Article form submission
             $('#write-article-form').submit(function (e) {
                 e.preventDefault(); // Prevent default form submission
-
                 var formData = new FormData(this);
-
                 $.ajax({
                     url: "{% url 'write-article-view' %}",
                     type: "POST",
@@ -241,7 +225,6 @@
                     },
                     success: function (response) {
                         $('#loadingIndicator').hide();
-
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -250,7 +233,6 @@
                                 confirmButtonText: 'OK',
                                 timer: 3000
                             });
-
                             $('#write-article-form')[0].reset();
                         } else {
                             Swal.fire({
@@ -272,20 +254,14 @@
                     }
                 });
             });
-        });
-    </script>
-
-    {% if update_article_url %}
-    <script>
-        $(document).ready(function () {
+    
+            // Handle Update Article form submission
             $('#update-article-form').submit(function (e) {
                 e.preventDefault();
-
                 var formData = new FormData(this);
                 var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
-
                 $.ajax({
-                    url: "{% url 'update-article-view' article.slug %}",
+                    url: window.location.href,
                     type: "POST",
                     data: formData,
                     processData: false,
@@ -296,7 +272,6 @@
                     },
                     success: function (response) {
                         $('#loadingIndicator').hide();
-
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -328,18 +303,11 @@
                     }
                 });
             });
-        });
-    </script>
-    {% endif %}
-
-    <!-- Update resource -->
-    <script>
-        $(document).ready(function() {
+    
+            // Handle Update Resource form submission
             $('#update-resource-form').on('submit', function(event) {
                 event.preventDefault();
-                var form = $(this);
                 var formData = new FormData(this);
-    
                 $.ajax({
                     url: window.location.href,
                     type: 'POST',
@@ -372,19 +340,12 @@
                     }
                 });
             });
-        });
-    </script>
-    <!-- end of script -->
-
-    <!-- Account Settings Update -->
-    <script>
-        $(document).ready(function () {
+    
+            // Handle Account Settings Update form submission
             $('#update-account-form').submit(function (e) {
                 e.preventDefault();
-    
                 var formData = new FormData(this);
                 var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
-    
                 $.ajax({
                     url: "{% url 'account-settings-view' %}",
                     type: "POST",
@@ -397,7 +358,6 @@
                     },
                     success: function (response) {
                         $('#loadingIndicator').hide();
-    
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -425,17 +385,11 @@
                     }
                 });
             });
-        });
-    </script>
-    <!-- end of account settings ajax -->
-
-    <script>
-        $(document).ready(function () {
+    
+            // Handle Add Product form submission
             $('#add-product-form').submit(function (e) {
                 e.preventDefault();
-
                 var formData = new FormData(this);
-
                 $.ajax({
                     url: "{% url 'add-resources' %}",
                     type: "POST",
@@ -447,7 +401,6 @@
                     },
                     success: function (response) {
                         $('#loadingIndicator').hide();
-
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -456,7 +409,6 @@
                                 confirmButtonText: 'OK',
                                 timer: 3000
                             });
-
                             $('#add-product-form')[0].reset();
                         } else {
                             Swal.fire({
@@ -478,11 +430,26 @@
                     }
                 });
             });
+    
+            // Initialize DataTables
+            $('#articleDataTable').DataTable({
+                responsive: true
+            });
+    
+            $('#followersDataTable').DataTable({
+                responsive: true
+            });
+    
+            // Add dark theme to the toolbar
+            const toolbar = document.querySelector('.fr-toolbar.fr-desktop.fr-top.fr-basic.fr-sticky-off');
+            if (toolbar) {
+                toolbar.classList.add('dark-theme');
+            }
         });
     </script>
 
-    <!-- swal for logout -->
-    <script>
+     <!-- swal for logout -->
+     <script>
         function confirmLogout() {
             Swal.fire({
                 title: "Are you sure?",
@@ -504,30 +471,7 @@
             });
         }
     </script>
-
-    {% if request.path == article_management_url or request.path == blog_followers  %}
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#articleDataTable').DataTable({
-                responsive: true
-            });
-
-            $('#followersDataTable').DataTable({
-                responsive: true
-            });
-        });
-    </script>
-    {% endif %}
-
-    <script>
-        const toolbar = document.querySelector('.fr-toolbar.fr-desktop.fr-top.fr-basic.fr-sticky-off');
-        if (toolbar) {
-            toolbar.classList.add('dark-theme');
-        }
-    </script>
-
+    
 </body>
 
 </html>
