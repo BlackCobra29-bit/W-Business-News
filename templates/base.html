@@ -45,38 +45,31 @@
                                 Home
                             </a>
                         </li>
-
-                        {% for main_menu in main_menus %}
-                            <li class="dropdown">
-                                    {% if main_menu.submenus.all %}
-                                        <a href="#" class="fw-bold">
-                                            <span>{{ main_menu.name }}</span> 
-                                            <i class="bi bi-chevron-down toggle-dropdown"></i>
-                                        </a>
-                                    {% else %}
-                                        <a href="{% url 'news-by-category' main_menu.name %}" class="fw-bold">
-                                            <span>{{ main_menu.name }}</span> 
-                                        </a>
-                                    {% endif %}
-                                {% if main_menu.submenus.all %}
-                                <ul>
-                                    {% for submenu in main_menu.submenus.all %}
-                                        <li>
-                                            {% with submenu.name as name %}
-                                                {% if "News (" in name %}
-                                                    <a href="{% url 'news-by-category' submenu.name %}" class="fw-bold">News</a>
-                                                {% elif "Regulations (" in name %}
-                                                    <a href="{% url 'news-by-category' submenu.name %}" class="fw-bold">Regulations</a>
-                                                {% else %}
-                                                    <a href="{% url 'news-by-category' submenu.name %}" class="fw-bold">{{ name }}</a>
-                                                {% endif %}
-                                            {% endwith %}
-                                        </li>
-                                    {% endfor %}
-                                </ul>                                
-                                {% endif %}
-                            </li>
-                        {% endfor %}
+                        <li class="dropdown"><a href="#" class="fw-bold"><span>Diesel Vehicle</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                              <li><a href="#">Trucks</a></li>
+                              <li><a href="#">Machineries</a></li>
+                              <li><a href="#">Cars</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'display-resources' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'display-resources' %}active{% endif %}">
+                                Electric Vehicle
+                            </a>
+                        </li>
+                        <li class="dropdown"><a href="#" class="fw-bold"><span>Banks & Financial</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                              <li><a href="#">News</a></li>
+                              <li><a href="#">Regulations</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown"><a href="#" class="fw-bold"><span>Logistics & Transport</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                              <li><a href="#">News</a></li>
+                              <li><a href="#">Regulations</a></li>
+                            </ul>
+                        </li>
                         <li>
                             <a href="{% url 'display-resources' %}"
                                 class="fw-bold {% if request.resolver_match.url_name == 'display-resources' %}active{% endif %}">

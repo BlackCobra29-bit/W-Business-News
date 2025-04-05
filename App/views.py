@@ -4,17 +4,11 @@ from django.views import View
 from django.http import JsonResponse
 from admin_app.models import Article, ResourcesModel
 from admin_app.models import Subscriber
-from admin_app.models import Website, MainMenu
+from admin_app.models import Website
 from hitcount.views import HitCountMixin
 from hitcount.models import HitCount
 
-class MenuMixin:
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['main_menus'] = MainMenu.objects.prefetch_related('submenus').all()
-        return context
-
-class UserIndex(MenuMixin, TemplateView):
+class UserIndex(TemplateView):
     template_name = "index.html"
     
     def post(self, request, *args, **kwargs):
@@ -46,7 +40,7 @@ class UserIndex(MenuMixin, TemplateView):
         context["old_articles"] = old_articles
         return context
 
-class NewsByCategoryView(MenuMixin, TemplateView):
+class NewsByCategoryView(TemplateView):
     template_name = 'page-specfic.html'
 
     def get(self, request, *args, **kwargs):
@@ -66,7 +60,7 @@ class NewsByCategoryView(MenuMixin, TemplateView):
 
         return context
     
-class DisplayResourceItems(MenuMixin, TemplateView):
+class DisplayResourceItems(TemplateView):
     template_name = "display-resources.html"
 
     def get(self, request, *args, **kwargs):
