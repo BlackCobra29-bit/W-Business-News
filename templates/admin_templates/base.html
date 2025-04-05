@@ -7,7 +7,7 @@
     {% url 'article-management-view' as article_management_url %}
     {% url 'write-article-view' as write_article_url %}
     {% url 'update-article-view' article.pk as update_article_url %}
-    {% url 'update-resource-view' resource.id as update_resource_url %}
+    {% url 'update-resource-view' resource.pk as update_resource_url %}
     {% url 'blog-followers' as blog_followers %}
 
     <link href="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.css" rel="stylesheet">
@@ -333,62 +333,47 @@
     {% endif %}
 
     <!-- Update resource -->
-    {% if update_resource_url %}
     <script>
-        $(document).ready(function () {
-            $('#update-resource-form').submit(function (e) {
-                e.preventDefault();
-
+        $(document).ready(function() {
+            $('#update-resource-form').on('submit', function(event) {
+                event.preventDefault();
+                var form = $(this);
                 var formData = new FormData(this);
-                var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
-
+    
                 $.ajax({
-                    url: "{% url 'update-resource-view' resource.id %}",
-                    type: "POST",
+                    url: window.location.href,
+                    type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
-                    headers: { "X-CSRFToken": csrfToken },
-                    beforeSend: function () {
-                        $('#loadingIndicator').show();
-                    },
-                    success: function (response) {
-                        $('#loadingIndicator').hide();
-
+                    success: function(response) {
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Updated!',
+                                title: 'Success!',
                                 text: response.message,
-                                confirmButtonText: 'OK'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = "{% url 'document-management-view' %}";
-                                }
+                            }).then(() => {
+                                window.location.href = response.redirect_url || '{% url "document-management-view" %}';
                             });
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Validation Error',
+                                title: 'Error!',
                                 text: response.message,
-                                confirmButtonText: 'OK'
                             });
                         }
                     },
-                    error: function (xhr, status, error) {
-                        $('#loadingIndicator').hide();
+                    error: function(xhr, status, error) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Server Error',
-                            text: 'Something went wrong. Please try again.',
-                            confirmButtonText: 'OK'
+                            title: 'Something went wrong!',
+                            text: error,
                         });
                     }
                 });
             });
         });
     </script>
-    {% endif %}
     <!-- end of script -->
 
     <!-- Account Settings Update -->
