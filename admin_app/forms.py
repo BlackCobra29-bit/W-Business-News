@@ -19,7 +19,7 @@ class Article_form(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['title', 'content', 'thumbnail', 'news_type']
+        fields = ['title', 'content', 'thumbnail', 'news_type', 'full_content_url']
         widgets = {
             'title': forms.TextInput(
                 attrs={
@@ -28,6 +28,12 @@ class Article_form(forms.ModelForm):
                     'data-parsley-trigger': 'change',
                     'required': 'required',
                     'id': 'title-icon'
+                }
+            ),
+            'full_content_url': forms.URLInput(
+                attrs={
+                    'class': 'form-control position-relative',
+                    'placeholder': 'URL',
                 }
             ),
             'content': FroalaEditor(),
@@ -39,6 +45,7 @@ class Article_form(forms.ModelForm):
         self.fields['content'].label = 'Content'
         self.fields['thumbnail'].label = 'Thumbnail'
         self.fields['news_type'].label = 'News Type'
+        self.fields['full_content_url'].label = 'Link to Full Article'
         self.fields['news_type'].choices = self.Meta.model._meta.get_field('news_type').choices
 
 class ResourcesForm(forms.ModelForm):

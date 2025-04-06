@@ -31,7 +31,8 @@
                                     <h2 class="title">
                                         <a href="#" data-bs-toggle="modal"
                                             data-bs-target="#articleModal{{ article.id }}">
-                                            {{ article.title }}</a>
+                                            {{ article.title }}
+                                        </a>
                                     </h2>
                                     <div class="post-meta d-flex align-items-center">
                                         <p class="post-date">
@@ -55,6 +56,13 @@
                                         </div>
                                         <div class="modal-body">
                                             {{ article.content|safe }}
+                                            {% if article.full_content_url %}
+                                            <div class="d-flex justify-content-center pt-4">
+                                                <a href="{{ article.full_content_url }}" target="_blank" class="text-center">
+                                                    <span class="bi bi-link"> Read full article: </span>
+                                                </a>
+                                            </div>
+                                            {% endif %}
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-primary"
@@ -145,28 +153,6 @@
                                             datetime="{{ article.created_at|date:'Y-m-d' }}">
                                             <span class="bi bi-clock"></span> {{ article.created_at|date:'M d, Y' }}
                                         </time>
-                                    </div>
-                                </div>
-
-                                <!-- Modal -->
-                                <div class="modal fade" id="articleModal{{ article.id }}" tabindex="-1"
-                                    aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary">
-                                                <h6 class="modal-title text-white text-center"
-                                                    id="articleModalLabel{{ article.id }}">
-                                                    {{ article.title }}
-                                                </h6>
-                                            </div>
-                                            <div class="modal-body">
-                                                {{ article.content|safe }}
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 {% endfor %} 

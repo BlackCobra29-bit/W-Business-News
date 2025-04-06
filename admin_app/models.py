@@ -32,7 +32,6 @@ def thumbnail_upload_to(instance, filename):
     return f'thumbnails/{filename[:100]}'
 
 class Article(models.Model):
-
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
     content = FroalaField(theme='dark')
@@ -44,6 +43,7 @@ class Article(models.Model):
     )
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    full_content_url = models.URLField(blank=True, null=True, help_text="URL to the full content")
 
     class Meta:
         ordering = ['-created_at']

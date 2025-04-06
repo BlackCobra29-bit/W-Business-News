@@ -8,6 +8,19 @@
     </a>
 </header>
 
+<style>
+    div[style*="background:#EF5350"] {
+      display: none;
+    }
+    .fr-wrapper div:nth-child(1) {
+      display: none;
+    }
+    #fr-logo{
+        display: none;
+    }
+
+</style>
+
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
@@ -37,18 +50,24 @@
                             enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
-                                {{ form.title.label_tag }}
+                                {{ form.title.label_tag }} <code>*</code>
                                 {{ form.title }}
                             </div>
                             <div class="form-group">
-                                {{ form.news_type.label_tag }}
+                                {{ form.news_type.label_tag }} <code>*</code>
                                 {{ form.news_type }}
                             </div>
                             <div class="form-group pt-4">
-                                {{ form.content.label_tag }}
+                                {{ form.content.label_tag }} <code>*</code>
                                 {{ form.content }}
                             </div>
-                            <div class="form-group">
+                            <br>
+                            <div class="form-group pt-4">
+                                {{ form.full_content_url.label_tag }} <code>(optional)</code>
+                                {{ form.full_content_url }}
+                            </div>
+                            <br>
+                            <div class="form-group pt-4"> <code>*</code>
                                 {{ form.thumbnail.label_tag }}
                                 {{ form.thumbnail }}
                             </div>
