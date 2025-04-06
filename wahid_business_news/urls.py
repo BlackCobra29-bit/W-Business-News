@@ -3,6 +3,7 @@ from django.urls import path, include
 from App.views import UserIndex, NewsByCategoryView, DisplayResourceItems
 from django.conf import settings
 from froala_editor import views
+from App.views import NewsByCategoryView
 from django.conf.urls.static import static
 from admin_app.views import AdminAuthentication, AdminIndex, WriteArticle, ArticleManagement, UpdateArticle, DeleteArticleView, AddResources, DocumentManagement , UpdateResource, DeleteResourceView, SubscriberList, AccountSettings, PasswordAdminUpdateView, LogoutView
 
@@ -13,7 +14,7 @@ urlpatterns = [
     path('hitcount/', include('hitcount.urls', namespace='hitcount')),
     # User URLs
     path("", UserIndex.as_view(), name="user-index-view"),
-    path('business_news/<str:news_type>/', NewsByCategoryView.as_view(), name='news-by-category'),
+    path('business_news/<slug:news_type>/', NewsByCategoryView.as_view(), name='news-by-category'),
     path("display-resources", DisplayResourceItems.as_view(), name = "display-resources"),
     # Admin URLs
     path("admin-auth/", AdminAuthentication.as_view(), name="admin-auth-view"),

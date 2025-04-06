@@ -24,7 +24,7 @@
                         <div class="post-img">
                             <img src="{{ article.thumbnail.url }}" alt="" class="img-fluid">
                         </div>
-                        <p class="post-category">{{ article.news_type }}</p>
+                        <p class="post-category">{{ article.get_news_type_display }}</p>
                         <h2 class="title">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#articleModal{{ article.id }}">
                                 {{ article.title }}</a>

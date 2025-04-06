@@ -8,6 +8,18 @@ from admin_app.models import Website
 from hitcount.views import HitCountMixin
 from hitcount.models import HitCount
 
+# Define a mapping for slugified versions
+NEWS_TYPE_SLUG_MAP = {
+    'trucks-diesel-vehicle': 'trucks_diesel',
+    'machineries-diesel-vehicle': 'machineries_diesel',
+    'cars-diesel-vehicle': 'cars_diesel',
+    'electric-vehicle': 'electric_vehicle',
+    'news-banks-financial': 'news_banks_financial',
+    'regulations-banks-financial': 'regulations_banks_financial',
+    'news-logistics-transport': 'news_logistics_transport',
+    'regulations-logistics-transport': 'regulations_logistics_transport',
+}
+
 class UserIndex(TemplateView):
     template_name = "index.html"
     
@@ -51,13 +63,18 @@ class NewsByCategoryView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        news_type = self.kwargs['news_type']
-        business_articles = Article.objects.filter(news_type=news_type).order_by('-created_at')
+        slug = self.kwargs['news_type']
+        internal_news_type = NEWS_TYPE_SLUG_MAP.get(slug)
 
+        if internal_news_type is None:
+            context['business_articles'] = []
+            return context
+
+        business_articles = Article.objects.filter(news_type=internal_news_type).order_by('-created_at')
         page = self.request.GET.get('page', 1)
         paginator = Paginator(business_articles, 15)
         context['business_articles'] = paginator.get_page(page)
-
+        context['current_category'] = slug
         return context
     
 class DisplayResourceItems(TemplateView):

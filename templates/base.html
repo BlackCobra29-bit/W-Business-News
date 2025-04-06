@@ -45,29 +45,82 @@
                                 Home
                             </a>
                         </li>
-                        <li class="dropdown"><a href="#" class="fw-bold"><span>Diesel Vehicle</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                         <!-- Diesel Vehicle Dropdown --> 
+                        <li class="dropdown">
+                            <a href="#" class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'trucks-diesel-vehicle' or request.resolver_match.kwargs.news_type == 'machineries-diesel-vehicle' or request.resolver_match.kwargs.news_type == 'cars-diesel-vehicle' %}active{% endif %}">
+                                <span>Diesel Vehicle</span>
+                                <i class="bi bi-chevron-down toggle-dropdown"></i>
+                            </a>
                             <ul>
-                              <li><a href="#">Trucks</a></li>
-                              <li><a href="#">Machineries</a></li>
-                              <li><a href="#">Cars</a></li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='trucks-diesel-vehicle' %}"
+                                    class="{% if request.resolver_match.kwargs.news_type == 'trucks-diesel-vehicle' %}active{% endif %}">
+                                    Trucks
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='machineries-diesel-vehicle' %}"
+                                    class="{% if request.resolver_match.kwargs.news_type == 'machineries-diesel-vehicle' %}active{% endif %}">
+                                    Machineries
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='cars-diesel-vehicle' %}"
+                                    class="{% if request.resolver_match.kwargs.news_type == 'cars-diesel-vehicle' %}active{% endif %}">
+                                    Cars
+                                    </a>
+                                </li>
                             </ul>
                         </li>
+                        <!-- Electric Vehicle -->
                         <li>
-                            <a href="{% url 'display-resources' %}"
-                                class="fw-bold {% if request.resolver_match.url_name == 'display-resources' %}active{% endif %}">
-                                Electric Vehicle
+                            <a href="{% url 'news-by-category' news_type='electric-vehicle' %}"
+                            class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'electric-vehicle' %}active{% endif %}">
+                            Electric Vehicle
                             </a>
                         </li>
-                        <li class="dropdown"><a href="#" class="fw-bold"><span>Banks & Financial</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+
+                        <!-- Banks & Financial -->
+                        <li class="dropdown">
+                            <a href="#" class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'news-banks-financial' %}active{% elif request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'regulations-banks-financial' %}active{% endif %}">
+                                <span>Banks & Financial</span>
+                                <i class="bi bi-chevron-down toggle-dropdown"></i>
+                            </a>
                             <ul>
-                              <li><a href="#">News</a></li>
-                              <li><a href="#">Regulations</a></li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='news-banks-financial' %}"
+                                    class="{% if request.resolver_match.kwargs.news_type == 'news-banks-financial' %}active{% endif %}">
+                                    News
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='regulations-banks-financial' %}"
+                                    class="{% if request.resolver_match.kwargs.news_type == 'regulations-banks-financial' %}active{% endif %}">
+                                    Regulations
+                                    </a>
+                                </li>
                             </ul>
                         </li>
-                        <li class="dropdown"><a href="#" class="fw-bold"><span>Logistics & Transport</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+
+                        <!-- Logistics & Transport -->
+                        <li class="dropdown">
+                            <a href="#" class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'news-logistics-transport' %}active{% elif request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'regulations-logistics-transport' %}active{% endif %}">
+                                <span>Logistics & Transport</span>
+                                <i class="bi bi-chevron-down toggle-dropdown"></i>
+                            </a>
                             <ul>
-                              <li><a href="#">News</a></li>
-                              <li><a href="#">Regulations</a></li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='news-logistics-transport' %}"
+                                    class="{% if request.resolver_match.kwargs.news_type == 'news-logistics-transport' %}active{% endif %}">
+                                    News
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='regulations-logistics-transport' %}"
+                                    class="{% if request.resolver_match.kwargs.news_type == 'regulations-logistics-transport' %}active{% endif %}">
+                                    Regulations
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li>
@@ -100,7 +153,6 @@
             </div>
         </div>
     </footer>
-
 
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i

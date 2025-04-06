@@ -27,7 +27,7 @@
                                     <div class="post-img">
                                         <img src="{{ article.thumbnail.url }}" alt="" class="img-fluid">
                                     </div>
-                                    <p class="post-category">{{ article.news_type }}</p>
+                                    <p class="post-category">{{ article.get_news_type_display }}</p>
                                     <h2 class="title">
                                         <a href="#" data-bs-toggle="modal"
                                             data-bs-target="#articleModal{{ article.id }}">
@@ -47,7 +47,7 @@
                                 aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
-                                        <div class="modal-header bg-danger">
+                                        <div class="modal-header bg-dark">
                                             <h6 class="modal-title text-white text-center"
                                                 id="articleModalLabel{{ article.id }}">
                                                 {{ article.title }}
