@@ -95,12 +95,3 @@ class DisplayResourceItems(TemplateView):
         context['resource_list'] = paginator.get_page(page)
 
         return context
-    
-class AboutUs(TemplateView):
-    template_name = "about-us.html"
-
-    def get(self, request, *args, **kwargs):
-        website = Website.objects.get(name="Wahid Business News")
-        hit_count = HitCount.objects.get_for_object(website)
-        HitCountMixin.hit_count(request, hit_count)
-        return super().get(request, *args, **kwargs)
