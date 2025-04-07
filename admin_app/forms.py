@@ -2,7 +2,7 @@ from django import forms
 from .models import Article, ResourcesModel
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from froala_editor.widgets import FroalaEditor
+from django_summernote.widgets import SummernoteWidget
 
 class Article_form(forms.ModelForm):
 
@@ -36,7 +36,7 @@ class Article_form(forms.ModelForm):
                     'placeholder': 'URL',
                 }
             ),
-            'content': FroalaEditor(),
+            'content': SummernoteWidget(),
         }
 
     def __init__(self, *args, **kwargs):

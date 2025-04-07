@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from App.views import UserIndex, NewsByCategoryView, DisplayResourceItems
+from App.views import UserIndex, NewsByCategoryView, DisplayResourceItems, AboutUs
 from django.conf import settings
 from froala_editor import views
 from App.views import NewsByCategoryView
@@ -9,13 +9,14 @@ from admin_app.views import AdminAuthentication, AdminIndex, WriteArticle, Artic
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('froala_editor/',include('froala_editor.urls')),
+    path('summernote/', include('django_summernote.urls')),
     path('captcha/', include('captcha.urls')),
     path('hitcount/', include('hitcount.urls', namespace='hitcount')),
     # User URLs
     path("", UserIndex.as_view(), name="user-index-view"),
     path('business_news/<slug:news_type>/', NewsByCategoryView.as_view(), name='news-by-category'),
     path("display-resources", DisplayResourceItems.as_view(), name = "display-resources"),
+    path("about-us", AboutUs.as_view(), name = "about-us"),
     # Admin URLs
     path("admin-auth/", AdminAuthentication.as_view(), name="admin-auth-view"),
     path("admin-dashboard/", AdminIndex.as_view(), name="admin-index-view"),

@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from PIL import Image
-from froala_editor.fields import FroalaField
 
 NEWS_TYPE_CHOICES = (
     ('trucks_diesel', 'Trucks - Diesel Vehicle'),
@@ -34,7 +33,7 @@ def thumbnail_upload_to(instance, filename):
 class Article(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
-    content = FroalaField(theme='dark')
+    content = models.TextField()
     thumbnail = models.ImageField(upload_to=thumbnail_upload_to)
     news_type = models.CharField(
         max_length=50,

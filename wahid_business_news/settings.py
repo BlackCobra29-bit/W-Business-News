@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'hitcount',
     'froala_editor',
     'App',
-    'admin_app'
+    'admin_app',
+    'django_summernote',
 ]
 
 HITCOUNT_KEEP_HIT_ACTIVE = {'minutes': 30}
