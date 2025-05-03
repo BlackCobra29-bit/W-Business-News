@@ -61,6 +61,43 @@
                                                 <a href="{{ article.full_content_url }}" target="_blank" class="text-center">
                                                     <span class="bi bi-link"> Read full article: </span>
                                                 </a>
+                                                
+                                                <a href="#" onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/'); return false;" class="text-center">
+                                                    <span class="bi bi-link"> Copy Link </span>
+                                                </a>
+                                                
+                                                <script>
+                                                    function copyToClipboard(text) {
+                                                        navigator.clipboard.writeText(text).then(function() {
+                                                            Toastify({
+                                                                text: "Link copied to clipboard!",
+                                                                duration: 3000,
+                                                                close: true,
+                                                                gravity: "top",
+                                                                position: "right",
+                                                                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                                                                stopOnFocus: true
+                                                            }).showToast();
+                                                        }, function(err) {
+                                                            Toastify({
+                                                                text: "Failed to copy link: " + err,
+                                                                duration: 3000,
+                                                                close: true,
+                                                                gravity: "top",
+                                                                position: "center",
+                                                                backgroundColor: "linear-gradient(to right, #ff0000, #ff7f7f)",
+                                                                stopOnFocus: true
+                                                            }).showToast();
+                                                        });
+                                                    }
+                                                </script>
+                                                
+                                                <!-- Include Toastify CSS (if not included yet) -->
+                                                <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+                                                
+                                                <!-- Include Toastify JS -->
+                                                <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>                                                                                               
+                                                
                                             </div>
                                             {% endif %}
                                         </div>

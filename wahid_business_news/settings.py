@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'captcha',
     'hitcount',
+    'django_summernote',
     'froala_editor',
     'App',
     'admin_app',
-    'django_summernote',
 ]
 
 HITCOUNT_KEEP_HIT_ACTIVE = {'minutes': 30}

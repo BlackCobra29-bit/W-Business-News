@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404
 from django.views import View
 from django.http import JsonResponse
 from admin_app.models import Article, ResourcesModel
@@ -41,7 +42,7 @@ class UserIndex(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         article_list = Article.objects.only('id', 'title', 'content', 'created_at').order_by("-created_at")
-        paginator = Paginator(article_list, 9)
+        paginator = Paginator(article_list, 15)
         page = self.request.GET.get('page')
         try:
             articles = paginator.page(page)
@@ -94,4 +95,20 @@ class DisplayResourceItems(TemplateView):
         paginator = Paginator(resources_list, 10)
         context['resource_list'] = paginator.get_page(page)
 
+        return context
+    
+class ViewArticle(HitCountMixin, TemplateView):
+    template_name = "view-article.html"
+
+    def get(self, request, *args, **kwargs):
+        website = Website.objects.get(name="Wahid Business News")
+        hit_count = HitCount.objects.get_for_object(website)
+        HitCountMixin.hit_count(request, hit_count)
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs['slug']
+        article = get_object_or_404(Article, slug=slug)
+        context['article'] = article
         return context

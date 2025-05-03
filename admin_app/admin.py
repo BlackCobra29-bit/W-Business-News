@@ -1,11 +1,29 @@
 from django.contrib import admin
-from admin_app.models import Article, Subscriber, Website, ResourcesModel
-from django_summernote.admin import SummernoteModelAdmin
+from django.apps import apps
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+from django_summernote.models import Attachment
 
-admin.site.register(Subscriber)
-admin.site.register(Website)
-admin.site.register(ResourcesModel)
+admin.site.site_header = "Wahid Business News"
+admin.site.site_title = "Wahid Business News"
+admin.site.index_title = "Welcome to Wahid Business News"
 
-@admin.register(Article)
-class ArticleAdmin(SummernoteModelAdmin):
-    summernote_fields = ('content',)
+User._meta.verbose_name = "System Admin"
+User._meta.verbose_name_plural = "System Admins"
+
+for model in apps.get_models():
+    if model != User:
+        try:
+            admin.site.unregister(model)
+        except admin.sites.NotRegistered:
+            pass
+
+try:
+    admin.site.unregister(Attachment)
+except admin.sites.NotRegistered:
+    pass
+
+try:
+    admin.site.register(User, UserAdmin)
+except admin.sites.AlreadyRegistered:
+    pass

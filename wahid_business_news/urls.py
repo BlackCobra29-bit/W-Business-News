@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from App.views import UserIndex, NewsByCategoryView, DisplayResourceItems
+from App.views import UserIndex, NewsByCategoryView, DisplayResourceItems, ViewArticle
 from django.conf import settings
 from froala_editor import views
 from App.views import NewsByCategoryView
@@ -16,6 +16,7 @@ urlpatterns = [
     path("", UserIndex.as_view(), name="user-index-view"),
     path('business_news/<slug:news_type>/', NewsByCategoryView.as_view(), name='news-by-category'),
     path("display-resources", DisplayResourceItems.as_view(), name = "display-resources"),
+    path('news/<slug:slug>/', ViewArticle.as_view(), name='view-article'),
     # Admin URLs
     path("admin-auth/", AdminAuthentication.as_view(), name="admin-auth-view"),
     path("admin-dashboard/", AdminIndex.as_view(), name="admin-index-view"),

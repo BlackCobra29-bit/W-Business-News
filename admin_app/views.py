@@ -227,7 +227,7 @@ class AccountSettings(AuthRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
         context["form"] = UserModelForm(instance=self.request.user)
-        context["password_form"] = CustomPasswordChangeForm(user=self.request.user)  # 👈 Pass the password form
+        context["password_form"] = CustomPasswordChangeForm(user=self.request.user)  # ðŸ‘ˆ Pass the password form
         return context
 
     def post(self, request, *args, **kwargs):
