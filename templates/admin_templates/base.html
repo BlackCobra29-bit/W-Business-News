@@ -28,6 +28,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">   
     <script type="module" src="https://unpkg.com/theme-toggle@0.1.5/dist/theme-toggle.js"
       crossorigin="anonymous"></script>
+      <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         .select2-container .select2-selection--single {
             height: 38px;
@@ -92,6 +94,17 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="sidebar-item {% if request.resolver_match.url_name == 'unapproved-comments-view' %}active{% endif %}">
+                            <a href="{% url 'unapproved-comments-view' %}" class='sidebar-link'>
+                                <i class="bi bi-chat-left-dots-fill"></i>
+                                <span>Comments </span>
+                                {% if unapproved_comment_count %}
+                                    <span class="badge bg-danger badge-sm">
+                                        {{ unapproved_comment_count }}
+                                    </span>
+                                {% endif %}
+                            </a>
+                        </li>
                         <li class="sidebar-item {% if request.resolver_match.url_name == 'blog-followers' %}active{% endif %}">
                             <a href="{% url 'blog-followers' %}" class='sidebar-link'>
                                 <i class="bi bi-people-fill"></i>
@@ -148,6 +161,7 @@
     
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     
     <script type="text/javascript">
         $(document).ready(function () {
@@ -434,6 +448,52 @@
             });
         }
     </script>
+
+    <!-- HTMX script for approving the pending comments -->
+    <script>
+        document.body.addEventListener('htmx:afterRequest', function (event) {
+            const response = event.detail.xhr.response;
+            try {
+                const data = JSON.parse(response);
+                Toastify({
+                    text: data.message,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                }).showToast();
+            } catch (e) {
+                console.error("Invalid JSON response");
+            }
+        });
+    </script>
+
+<script>
+    function handleDeleteResponse(event) {
+        try {
+            const xhr = event.detail.xhr;
+            const data = JSON.parse(xhr.responseText);
+    
+            Toastify({
+                text: data.message,
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: data.success ? "#28a745" : "#dc3545"
+            }).showToast();
+    
+            if (data.success) {
+                // Remove the comment div if deletion was successful
+                const commentDiv = document.getElementById(`comment-${event.target.dataset.commentId}`);
+                if (commentDiv) {
+                    commentDiv.remove();
+                }
+            }
+        } catch (e) {
+            console.error("JSON parse error:", e);
+        }
+    }
+    </script>    
     
 </body>
 

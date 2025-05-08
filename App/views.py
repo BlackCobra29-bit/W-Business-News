@@ -2,9 +2,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from django.views import View
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 from django.http import JsonResponse
+from django.db.models import Prefetch
 from admin_app.models import Article, ResourcesModel
 from admin_app.models import Subscriber
+from admin_app.models import Comment
 from admin_app.models import Website
 from hitcount.views import HitCountMixin
 from hitcount.models import HitCount
@@ -21,7 +25,7 @@ NEWS_TYPE_SLUG_MAP = {
     'regulations-logistics-transport': 'regulations_logistics_transport',
 }
 
-class UserIndex(TemplateView):
+class UserIndex(HitCountMixin, TemplateView):
     template_name = "index.html"
     
     def post(self, request, *args, **kwargs):
@@ -41,19 +45,28 @@ class UserIndex(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        article_list = Article.objects.only('id', 'title', 'content', 'created_at').order_by("-created_at")
+
+        article_list = Article.objects.only('id', 'slug', 'title', 'content', 'created_at')\
+                .prefetch_related(Prefetch(
+                    'comments',
+                    queryset=Comment.objects.filter(approved=True).only('id', 'article', 'name', 'email', 'content', 'created_at')
+                ))\
+                .order_by("-created_at")
+
         paginator = Paginator(article_list, 15)
         page = self.request.GET.get('page')
         try:
             articles = paginator.page(page)
         except (PageNotAnInteger, EmptyPage):
             articles = paginator.page(1)
+
         old_articles = Article.objects.only('id', 'title').order_by("created_at")[:5]
+
         context["articles"] = articles
         context["old_articles"] = old_articles
         return context
 
-class NewsByCategoryView(TemplateView):
+class NewsByCategoryView(HitCountMixin, TemplateView):
     template_name = 'page-specfic.html'
 
     def get(self, request, *args, **kwargs):
@@ -71,14 +84,23 @@ class NewsByCategoryView(TemplateView):
             context['business_articles'] = []
             return context
 
-        business_articles = Article.objects.filter(news_type=internal_news_type).order_by('-created_at')
+        business_articles = Article.objects.filter(news_type=internal_news_type) \
+            .only('id', 'slug', 'title', 'content', 'created_at') \
+            .prefetch_related(
+                Prefetch(
+                    'comments',
+                    queryset=Comment.objects.filter(approved=True)
+                        .only('id', 'article', 'name', 'email', 'content', 'created_at')
+                )
+            ) \
+            .order_by('-created_at')
         page = self.request.GET.get('page', 1)
         paginator = Paginator(business_articles, 15)
         context['business_articles'] = paginator.get_page(page)
         context['current_category'] = slug
         return context
     
-class DisplayResourceItems(TemplateView):
+class DisplayResourceItems(HitCountMixin, TemplateView):
     template_name = "display-resources.html"
 
     def get(self, request, *args, **kwargs):
@@ -109,6 +131,41 @@ class ViewArticle(HitCountMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         slug = self.kwargs['slug']
-        article = get_object_or_404(Article, slug=slug)
+        article = get_object_or_404(
+                Article.objects.only('id', 'slug', 'title', 'content', 'created_at')
+                .prefetch_related(
+                    Prefetch(
+                        'comments',
+                        queryset=Comment.objects.filter(approved=True)
+                            .only('id', 'article', 'name', 'email', 'content', 'created_at')
+                    )
+                ),
+                slug=slug
+            )
         context['article'] = article
         return context
+    
+class SaveCommentView(View):
+    def post(self, request, *args, **kwargs):
+        slug = self.kwargs.get('slug')
+        article = get_object_or_404(Article, slug=slug)
+
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        content = request.POST.get('comment')
+
+        if not name or not email or not content:
+            return JsonResponse({'success': False, 'message': 'All fields are required.'}, status=400)
+        
+        comment = Comment.objects.create(
+            article=article,
+            name=name,
+            email=email,
+            content=content
+        )
+
+        rendered = render_to_string('partials/comment.html', {'comment': comment})
+        response = HttpResponse(rendered)
+        response['HX-Trigger'] = 'comment-added'
+        
+        return response

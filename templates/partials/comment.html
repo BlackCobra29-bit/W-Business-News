@@ -1,0 +1,14 @@
+<div id="comment-{{ comment.id }}" class="comment py-3 border-bottom">
+    <div class="d-flex align-items-start">
+        <div class="comment-img me-3">
+            <span class="bi bi-person-circle fs-2 text-primary"></span>
+        </div>
+        <div>
+            <h5 class="mb-1">{{ comment.name }}</h5>
+            <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted small">
+                {{ comment.created_at|date:"d M, Y" }}
+            </time>
+            <p class="mt-2 mb-0">{{ comment.content }}</p>
+        </div>
+    </div>
+</div>

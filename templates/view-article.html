@@ -1,47 +1,364 @@
-{% extends 'base.html' %}
-
 {% load static %}
 
-{% block 'page-template' %}
+<!DOCTYPE html>
+<html lang="en">
 
-<main class="main">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Wahid Business News</title>
+    <meta name="keywords" content=""><meta name="description" content="{{ article.content|striptags|truncatechars:155 }}">
+    <meta property="og:description" content="{{ article.content|striptags|truncatechars:155 }}">    
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ article.thumbnail.url }}">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <!-- Favicons -->
+    <link href="{% static 'images/site-logo.png' %}" rel="icon">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
 
-    <section id="blog-posts" class="blog-posts section mt-5">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
 
-        <div class="container">
-            <div class="row mt-5">
+    <!-- Vendor CSS Files -->
+    <link rel="stylesheet" href="{% static 'admin_statics/bootstrap.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
 
-                <div class="result-item mt-3 border rounded p-3">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h5 class="mb-1 blog-title">
-                                <a href="#" class="text-primary text-decoration-none">
-                                    {{ article.title }}
-                                </a>
-                            </h5>
-                            <p class="mb-1 text-muted">
-                                <small>
-                                    <i class="bi bi-clock me-1"></i>Published on: 
-                                    {{ article.created_at|date:"d M Y" }}
-                                </small>
-                            </p>
-                            <p class="mb-2 text-dark">
-                                {{ article.content|safe }}
-                            </p>
+</head>
+
+<body class="blog-page">
+
+    <header id="header" class="header fixed-top">
+
+        <div class="branding d-flex align-items-cente">
+
+            <div class="container position-relative d-flex align-items-center justify-content-between">
+                <a href="{% url 'user-index-view' %}" class="logo d-flex align-items-center">
+                    <img src="{% static 'images/site-logo.png' %}" alt="">
+                </a>
+
+                <nav id="navmenu" class="navmenu">
+                    <ul>
+                        <li>
+                            <a href="{% url 'user-index-view' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'user-index-view' %}active{% endif %}">
+                                Home
+                            </a>
+                        </li>
+                        <!-- Diesel Vehicle Dropdown -->
+                        <li class="dropdown">
+                            <a href="#"
+                                class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'trucks-diesel-vehicle' or request.resolver_match.kwargs.news_type == 'machineries-diesel-vehicle' or request.resolver_match.kwargs.news_type == 'cars-diesel-vehicle' %}active{% endif %}">
+                                <span>Diesel Vehicle</span>
+                                <i class="bi bi-chevron-down toggle-dropdown"></i>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='trucks-diesel-vehicle' %}"
+                                        class="{% if request.resolver_match.kwargs.news_type == 'trucks-diesel-vehicle' %}active{% endif %}">
+                                        Trucks
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='machineries-diesel-vehicle' %}"
+                                        class="{% if request.resolver_match.kwargs.news_type == 'machineries-diesel-vehicle' %}active{% endif %}">
+                                        Machineries
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='cars-diesel-vehicle' %}"
+                                        class="{% if request.resolver_match.kwargs.news_type == 'cars-diesel-vehicle' %}active{% endif %}">
+                                        Cars
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Electric Vehicle -->
+                        <li>
+                            <a href="{% url 'news-by-category' news_type='electric-vehicle' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'electric-vehicle' %}active{% endif %}">
+                                Electric Vehicle
+                            </a>
+                        </li>
+
+                        <!-- Banks & Financial -->
+                        <li class="dropdown">
+                            <a href="#"
+                                class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'news-banks-financial' %}active{% elif request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'regulations-banks-financial' %}active{% endif %}">
+                                <span>Banks & Financial</span>
+                                <i class="bi bi-chevron-down toggle-dropdown"></i>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='news-banks-financial' %}"
+                                        class="{% if request.resolver_match.kwargs.news_type == 'news-banks-financial' %}active{% endif %}">
+                                        News
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='regulations-banks-financial' %}"
+                                        class="{% if request.resolver_match.kwargs.news_type == 'regulations-banks-financial' %}active{% endif %}">
+                                        Regulations
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Logistics & Transport -->
+                        <li class="dropdown">
+                            <a href="#"
+                                class="fw-bold {% if request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'news-logistics-transport' %}active{% elif request.resolver_match.url_name == 'news-by-category' and request.resolver_match.kwargs.news_type == 'regulations-logistics-transport' %}active{% endif %}">
+                                <span>Logistics & Transport</span>
+                                <i class="bi bi-chevron-down toggle-dropdown"></i>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='news-logistics-transport' %}"
+                                        class="{% if request.resolver_match.kwargs.news_type == 'news-logistics-transport' %}active{% endif %}">
+                                        News
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'news-by-category' news_type='regulations-logistics-transport' %}"
+                                        class="{% if request.resolver_match.kwargs.news_type == 'regulations-logistics-transport' %}active{% endif %}">
+                                        Regulations
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'display-resources' %}"
+                                class="fw-bold {% if request.resolver_match.url_name == 'display-resources' %}active{% endif %}">
+                                Resources
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="fw-bold" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                                About Us
+                            </a>
+                        </li>
+
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                </nav>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span class="bi bi-globe bi-spin text-primary fs-3"></span> Wahid is a "news aggregate" website
+                    mainly aiming at picking, distilling, briefly
+                    summarizing, news analysis of market trends, and sometimes adding original insights on the
+                    business news targeting the Ethiopian market. So, if you are looking for important news
+                    regarding the diesel and electric vehicles, banking and finance, transport and logistics,
+                    and others, Wahid is the right place to look for. We are happy to share you downloadable
+                    resources too; like policies, regulations and directives on important sectors like banking,
+                    transport, import and customs, etc.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main">
+
+        <section id="blog-posts" class="blog-posts section mt-5">
+
+            <div class="container">
+                <div class="row mt-5">
+
+                    <div class="result-item mt-3 border rounded p-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="mb-1 blog-title">
+                                    <a href="#" class="text-primary text-decoration-none">
+                                        {{ article.title }}
+                                    </a>
+                                </h5>
+                                <p class="mb-1 text-muted">
+                                    <small>
+                                        <i class="bi bi-clock me-1"></i>Published on:
+                                        {{ article.created_at|date:"d M Y" }}
+                                    </small>
+                                </p>
+                                <p class="mb-2 text-dark">
+                                    {{ article.content|safe }}
+                                </p>
+
                             
-                            <div class="d-flex justify-content-center pt-4">
-                                <a href="{{ article.full_content_url }}" target="_blank" class="text-center">
-                                    <span class="bi bi-link"> Read full article: </span>
-                                </a>
+                                {% if article.full_content_url %}
+                                <div class="d-flex justify-content-center pt-4">
+                                    <a href="{{ article.full_content_url }}" target="_blank" class="text-center">
+                                        <span class="bi bi-link"> Read full article: </span>
+                                    </a>
+                                </div>
+                                {% endif %}
+
+                                <!-- Share News Section -->
+                                <div class="copy-link-container text-center mt-3 pt-4">
+                                    <h6 class="text-muted mb-4"><span class="bi bi-share"></span> Share News</h6>
+                                    <div class="d-flex justify-content-center align-items-center flex-wrap">
+                                        <!-- Copy Link Button -->
+                                                    <a href="#"
+                                                        onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/'); return false;"
+                                                        class="btn btn-outline-secondary mx-2 mb-2">
+                                                        <span class="bi bi-link"> Copy Link </span>
+                                                    </a>
+
+                                                    <!-- Facebook Share -->
+                                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                                        target="_blank" class="btn btn-primary mx-2 mb-2"
+                                                        title="Share on Facebook">
+                                                        <i class="bi bi-facebook"></i> Facebook
+                                                    </a>
+                                                    
+                                                    <!-- Twitter Share (Brand color) -->
+                                                    <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                                        target="_blank" class="btn btn-twitter mx-2 mb-2" title="Share on Twitter">
+                                                        <i class="bi bi-twitter-x"></i> Twitter
+                                                    </a>
+
+                                                    <!-- LinkedIn Share (Brand color) -->
+                                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                                        target="_blank" class="btn btn-linkedin mx-2 mb-2"
+                                                        title="Share on LinkedIn">
+                                                        <i class="bi bi-linkedin"></i> LinkedIn
+                                                    </a>
+
+                                                    <!-- WhatsApp Share -->
+                                                    <a href="https://api.whatsapp.com/send?text={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                                        target="_blank" class="btn btn-success mx-2 mb-2"
+                                                        title="Share on WhatsApp">
+                                                        <i class="bi bi-whatsapp"></i> WhatsApp
+                                                    </a>
+                                    </div>
+                                </div>
+                                <section id="blog-comments" class="blog-comments section pt-3">
+                                    <hr>
+                                    
+                                    <!-- Comments Container -->
+                                    <div id="comments-list">
+                                        {% for comment in article.comments.all %}
+                                            {% include 'partials/comment.html' with comment=comment %}
+                                        {% endfor %}  
+                                    </div>                                      
+                                
+                                        <!-- No Comments Message (optional) -->
+                                        {% if not article.comments.all %}
+                                            <p class="text-muted mt-3">No comments yet. Be the first to comment!</p>
+                                        {% endif %}
+                                </section>
+                                
+                                <!-- Comment Form -->
+                                <section id="comment-form" class="comment-form section mt-4">
+                                    <div class="container">
+                                        <form 
+                                            id="commentForm"
+                                            method="POST"
+                                            hx-post="{% url 'save-comment' article.slug %}"
+                                            hx-target="#comments-list"
+                                            hx-swap="delete"
+                                            hx-on::after-request="if(event.detail.successful) this.reset()" data-parsley-validate=""
+                                        >
+                                            {% csrf_token %}
+                                            <h4>Post Comment</h4>
+                                            <p>Your email address will not be published. Required fields are marked * </p>
+                                
+                                            <div class="row">
+                                                <div class="col-md-6 form-group">
+                                                    <input name="name" type="text" class="form-control" placeholder="Your Name*" required>
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <input name="email" type="email" class="form-control" placeholder="Your Email*" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col form-group">
+                                                    <textarea name="comment" class="form-control" placeholder="Your Comment*" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="text-center mt-3">
+                                                <button type="submit" class="btn btn-primary">Post Comment</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>    
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+        </section>
+
+    </main>
+
+    <footer id="footer" class="footer accent-background">
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">Wahid Business News</strong> <span>All Rights
+                    Reserved</span></p>
+            <div class="credits">
+                Developed by <a href="https://www.linkedin.com/in/tesfahiwet-truneh-2a2139179/"
+                    class="fw-bold">Tesfahiwet Truneh</a>
+            </div>
         </div>
+    </footer>
 
-    </section>
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
 
-</main>
+    <!-- Preloader -->
+    <div id="preloader"></div>
 
-{% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        
+    <script>
+        $('#commentForm').parsley();
+    </script>
+
+    <script>
+        document.body.addEventListener('htmx:afterSwap', function (event) {
+            if (event.detail.xhr.getResponseHeader('HX-Trigger') === 'comment-added') {
+                Toastify({
+                    text: "Comment added and is waiting for approval.",
+                    duration: 4000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    close: true
+                }).showToast();
+            }
+            else{
+                Toastify({
+                        text: "An unexpected error occurred. Please try again.",
+                        duration: 4000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc3a0)",
+                        close: true
+                    }).showToast();
+            }
+        });
+    </script>    
+
+</body>
+
+</html>

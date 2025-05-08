@@ -39,31 +39,127 @@
                     </article>
                 </div>
 
+                
+
                 <div class="modal fade" id="articleModal{{ article.id }}" tabindex="-1"
-                    aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-dark">
-                                <h6 class="modal-title text-white text-center" id="articleModalLabel{{ article.id }}">
-                                    {{ article.title }}
-                                </h6>
+                aria-labelledby="articleModalLabel{{ article.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark">
+                            <h6 class="modal-title text-white text-center"
+                                id="articleModalLabel{{ article.id }}">
+                                {{ article.title }}
+                            </h6>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Article Content -->
+                            {{ article.content|safe }}
+                            {% if article.full_content_url %}
+                            <div class="d-flex justify-content-center pt-4">
+                                <a href="{{ article.full_content_url }}" target="_blank"
+                                    class="text-center">
+                                    <span class="bi bi-link"> Read full article: </span>
+                                </a>
                             </div>
-                            <div class="modal-body">
-                                {{ article.content|safe }}
-                                {% if article.full_content_url %}
-                                <div class="d-flex justify-content-center pt-4">
-                                    <a href="{{ article.full_content_url }}" target="_blank" class="text-center">
-                                        <span class="bi bi-link"> Read full article: </span>
+                            {% endif %}
+
+                            <!-- Share News Section -->
+                            <div class="copy-link-container text-center mt-3 pt-4">
+                                <h6 class="text-muted mb-4"><span class="bi bi-share"></span> Share News</h6>
+                                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                                    <!-- Copy Link Button -->
+                                    <a href="#"
+                                        onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/'); return false;"
+                                        class="btn btn-outline-secondary mx-2 mb-2">
+                                        <span class="bi bi-link"> Copy Link </span>
+                                    </a>
+
+                                    <!-- Facebook Share -->
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-primary mx-2 mb-2"
+                                        title="Share on Facebook">
+                                        <i class="bi bi-facebook"></i> Facebook
+                                    </a>
+                                    
+                                    <!-- Twitter Share (Brand color) -->
+                                    <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-twitter mx-2 mb-2" title="Share on Twitter">
+                                        <i class="bi bi-twitter-x"></i> Twitter
+                                    </a>
+
+                                    <!-- LinkedIn Share (Brand color) -->
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-linkedin mx-2 mb-2"
+                                        title="Share on LinkedIn">
+                                        <i class="bi bi-linkedin"></i> LinkedIn
+                                    </a>
+
+                                    <!-- WhatsApp Share -->
+                                    <a href="https://api.whatsapp.com/send?text={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-success mx-2 mb-2"
+                                        title="Share on WhatsApp">
+                                        <i class="bi bi-whatsapp"></i> WhatsApp
                                     </a>
                                 </div>
-                                {% endif %}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
+                                </div>
+                                <section id="blog-comments" class="blog-comments section pt-3">
+                                    <hr>
+                                    
+                                    <!-- Comments Container -->
+                                    <div id="comments-list">
+                                        {% for comment in article.comments.all %}
+                                            {% include 'partials/comment.html' with comment=comment %}
+                                        {% endfor %}  
+                                    </div>                                      
+                                
+                                        <!-- No Comments Message (optional) -->
+                                        {% if not article.comments.all %}
+                                            <p class="text-muted mt-3">No comments yet. Be the first to comment!</p>
+                                        {% endif %}
+                                </section>
+                                
+                                <!-- Comment Form -->
+                                <section id="comment-form" class="comment-form section mt-4">
+                                    <div class="container">
+                                        <form 
+                                            id="commentForm"
+                                            method="POST"
+                                            hx-post="{% url 'save-comment' article.slug %}"
+                                            hx-target="#comments-list"
+                                            hx-swap="delete"
+                                            hx-on::after-request="if(event.detail.successful) this.reset()" data-parsley-validate=""
+                                        >
+                                            {% csrf_token %}
+                                            <h4>Post Comment</h4>
+                                            <p>Your email address will not be published. Required fields are marked * </p>
+                                
+                                            <div class="row">
+                                                <div class="col-md-6 form-group">
+                                                    <input name="name" type="text" class="form-control" placeholder="Your Name*" required>
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <input name="email" type="email" class="form-control" placeholder="Your Email*" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col form-group">
+                                                    <textarea name="comment" class="form-control" placeholder="Your Comment*" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="text-center mt-3">
+                                                <button type="submit" class="btn btn-primary">Post Comment</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>                                                
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary"
+                                data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
+            </div>
                 {% endfor %}
                 {% else %}
                 <!-- No Articles Found Message -->

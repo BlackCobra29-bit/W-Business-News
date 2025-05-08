@@ -15,7 +15,9 @@ from captcha.models import CaptchaStore
 from django.contrib.auth.models import User
 from .forms import Article_form , ResourcesForm, UserModelForm, CustomPasswordChangeForm
 from django import forms
+from .mixins import UnapprovedCommentCountMixin
 from captcha.fields import CaptchaField
+from .models import Comment
 from hitcount.models import HitCount
 
 class CaptchaTestForm(forms.Form):
@@ -64,7 +66,7 @@ class AdminAuthentication(TemplateView):
         else:
             return JsonResponse({"error": "Invalid username or password."}, status=400)
 
-class AdminIndex(AuthRequiredMixin, TemplateView):
+class AdminIndex(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/index.html"
 
     def get_context_data(self, **kwargs):
@@ -78,7 +80,7 @@ class AdminIndex(AuthRequiredMixin, TemplateView):
         context['total_resources'] = total_resources
         return context
     
-class WriteArticle(AuthRequiredMixin, TemplateView):
+class WriteArticle(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/write_article.html"
 
     def post(self, request, *args, **kwargs):
@@ -97,7 +99,7 @@ class WriteArticle(AuthRequiredMixin, TemplateView):
         context['form'] = Article_form()
         return context
     
-class ArticleManagement(AuthRequiredMixin, TemplateView):
+class ArticleManagement(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/article-management.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -108,7 +110,7 @@ class ArticleManagement(AuthRequiredMixin, TemplateView):
         context['articles'] = articles
         return context
     
-class UpdateArticle(AuthRequiredMixin, UpdateView):
+class UpdateArticle(AuthRequiredMixin, UnapprovedCommentCountMixin, UpdateView):
     model = Article
     form_class = Article_form
     template_name = "admin_templates/update-article.html"
@@ -136,7 +138,7 @@ class UpdateArticle(AuthRequiredMixin, UpdateView):
         context['form'] = self.form_class(instance=self.get_object())
         return context
     
-class DeleteArticleView(AuthRequiredMixin, View):
+class DeleteArticleView(AuthRequiredMixin, UnapprovedCommentCountMixin, View):
     def delete(self, request, slug):
         try:
             article = Article.objects.get(slug=slug)
@@ -145,7 +147,38 @@ class DeleteArticleView(AuthRequiredMixin, View):
         except Article.DoesNotExist:
             return JsonResponse({"success": False, "message": "Article not found!"})
         
-class AddResources(AuthRequiredMixin, TemplateView):
+
+class UnapprovedCommentsView(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
+    template_name = "admin_templates/unapproved_comments.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["unapproved_comments"] = Comment.objects.filter(approved=False).select_related("article")
+        return context
+
+class ApproveCommentView(View):
+    def post(self, request, *args, **kwargs):
+        comment_id = self.kwargs.get('pk')
+
+        try:
+            comment = Comment.objects.get(pk=comment_id, approved=False)
+            comment.approved = True
+            comment.save()
+            return JsonResponse({'success': True, 'message': 'Comment approved successfully.'})
+        except Comment.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Comment not found or already approved.'}, status=404)        
+
+class DeleteCommentView(View):
+    def post(self, request, *args, **kwargs):
+        comment_id = self.kwargs.get('pk')
+        try:
+            comment = Comment.objects.get(pk=comment_id)
+            comment.delete()
+            return JsonResponse({'success': True, 'message': 'Comment deleted successfully.'})
+        except Comment.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Comment not found.'}, status=404)
+        
+class AddResources(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/add_resources.html"
 
     def post(self, request, *args, **kwargs):
@@ -164,7 +197,7 @@ class AddResources(AuthRequiredMixin, TemplateView):
         context['form'] = ResourcesForm()
         return context
     
-class DocumentManagement(AuthRequiredMixin, TemplateView):
+class DocumentManagement(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/resources-management.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -175,7 +208,7 @@ class DocumentManagement(AuthRequiredMixin, TemplateView):
         context['resources'] = resources
         return context
     
-class UpdateResource(AuthRequiredMixin, UpdateView):
+class UpdateResource(AuthRequiredMixin, UnapprovedCommentCountMixin, UpdateView):
     model = ResourcesModel
     form_class = ResourcesForm
     template_name = "admin_templates/update-resource.html"
@@ -203,7 +236,7 @@ class UpdateResource(AuthRequiredMixin, UpdateView):
         context['form'] = self.form_class(instance=self.get_object())
         return context
     
-class DeleteResourceView(AuthRequiredMixin, View):
+class DeleteResourceView(AuthRequiredMixin, UnapprovedCommentCountMixin, View):
     def delete(self, request, id):
         try:
             article = ResourcesModel.objects.get(id=id)
@@ -212,7 +245,7 @@ class DeleteResourceView(AuthRequiredMixin, View):
         except ResourcesModel.DoesNotExist:
             return JsonResponse({"success": False, "message": "Resource not found!"})
         
-class SubscriberList(AuthRequiredMixin, TemplateView):
+class SubscriberList(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/subscriber-list.html"
 
     def get_context_data(self, **kwargs):
@@ -220,7 +253,7 @@ class SubscriberList(AuthRequiredMixin, TemplateView):
         context['subscribers'] = Subscriber.objects.all()
         return context
         
-class AccountSettings(AuthRequiredMixin, TemplateView):
+class AccountSettings(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/settings.html"
 
     def get_context_data(self, **kwargs):
@@ -239,7 +272,7 @@ class AccountSettings(AuthRequiredMixin, TemplateView):
             errors = form.errors.as_json()
             return JsonResponse({"success": False, "message": "There was an error updating the account details.", "errors": errors})
 
-class PasswordAdminUpdateView(AuthRequiredMixin, PasswordChangeView):
+class PasswordAdminUpdateView(AuthRequiredMixin, UnapprovedCommentCountMixin, PasswordChangeView):
     form_class = CustomPasswordChangeForm
     template_name = 'admin_templates/update-password.html'
     success_url = reverse_lazy('admin-index-view')

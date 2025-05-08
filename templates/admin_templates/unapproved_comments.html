@@ -1,0 +1,97 @@
+{% extends 'admin_templates/base.html' %}
+{% load static %}
+{% block 'main-page-content' %}
+
+<header class="mb-3">
+    <a href="#" class="burger-btn d-block d-xl-none">
+        <i class="bi bi-justify fs-3"></i>
+    </a>
+</header>
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Pending Comments</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'admin-index-view' %}" hx-get="{% url 'admin-index-view' %}"
+                                hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Pending Comments</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Rest of your write-article content remains the same -->
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="list-group">
+                            {% if unapproved_comments %}
+                            {% for comment in unapproved_comments %}
+                            <div id="comment-{{ comment.id }}" class="list-group-item list-group-item-action mb-2"
+                            hx-target="this"
+                            hx-swap="delete"
+                            hx-on="htmx:afterOnLoad:handleApproveResponse">
+                           
+                           <div class="d-flex w-100 justify-content-between">
+                               <h5 class="mb-1">{{ comment.name }}</h5>
+                               <small class="text-muted">Email: {{ comment.email }}</small>
+                               <small>{{ comment.created_at }}</small>
+                           </div>
+                       
+                           <p class="mb-1">{{ comment.content }}</p>
+                           
+                           <!-- 👇 Display article title or link -->
+                           <div class="mt-1 text-secondary small">
+                               Article: 
+                               <a href="{% url 'view-article' comment.article.slug %}" target="_blank">
+                                   {{ comment.article.title }}
+                               </a>
+                           </div>
+                       
+                           <div class="mt-2">
+                               <a 
+                                   hx-post="{% url 'approve-comment' comment.id %}" 
+                                   hx-trigger="click"
+                                   hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                   class="btn btn-sm btn-success"
+                               >
+                                   Approve
+                               </a>
+                       
+                               <a 
+                                   hx-post="{% url 'delete-comment' comment.id %}" 
+                                   hx-trigger="click"
+                                   hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                   hx-swap="delete"
+                                   class="btn btn-sm btn-danger"
+                                   data-comment-id="{{ comment.id }}"
+                               >
+                                   Delete
+                               </a>
+                           </div>                                
+                       </div>                       
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert alert-danger">
+                                    No pending comments to display.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Keep all other sections as they are -->
+</div>
+
+{% endblock %}

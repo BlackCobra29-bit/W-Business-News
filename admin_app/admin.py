@@ -3,6 +3,7 @@ from django.apps import apps
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django_summernote.models import Attachment
+from .models import Comment
 
 admin.site.site_header = "Wahid Business News"
 admin.site.site_title = "Wahid Business News"
@@ -27,3 +28,5 @@ try:
     admin.site.register(User, UserAdmin)
 except admin.sites.AlreadyRegistered:
     pass
+
+admin.site.register(Comment)

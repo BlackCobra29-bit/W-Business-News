@@ -64,7 +64,23 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
+    name = models.CharField(max_length=100, verbose_name="Name")
+    email = models.EmailField(verbose_name="Email")
+    content = models.TextField(verbose_name="Comment")
+    approved = models.BooleanField(default=False, verbose_name="approved")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Comment by {self.name} on {self.article.title}"
+
 class ResourcesModel(models.Model):
     resource_name = models.CharField(max_length=200)
     short_description = models.TextField()
