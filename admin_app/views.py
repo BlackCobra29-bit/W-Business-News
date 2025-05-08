@@ -14,6 +14,7 @@ from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.contrib.auth.models import User
 from .forms import Article_form , ResourcesForm, UserModelForm, CustomPasswordChangeForm
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django import forms
 from .mixins import UnapprovedCommentCountMixin
 from captcha.fields import CaptchaField
@@ -146,14 +147,27 @@ class DeleteArticleView(AuthRequiredMixin, UnapprovedCommentCountMixin, View):
             return JsonResponse({"success": True, "message": "Article deleted successfully!"})
         except Article.DoesNotExist:
             return JsonResponse({"success": False, "message": "Article not found!"})
-        
 
 class UnapprovedCommentsView(AuthRequiredMixin, UnapprovedCommentCountMixin, TemplateView):
     template_name = "admin_templates/unapproved_comments.html"
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["unapproved_comments"] = Comment.objects.filter(approved=False).select_related("article")
+
+        unapproved_comments = Comment.objects.filter(approved=False).select_related("article")
+        paginator = Paginator(unapproved_comments, self.paginate_by)
+
+        page_number = self.request.GET.get("page")
+        try:
+            page_obj = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+
+        context["page_obj"] = page_obj
+        context["unapproved_comments"] = page_obj.object_list
         return context
 
 class ApproveCommentView(View):

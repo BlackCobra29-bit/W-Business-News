@@ -207,44 +207,49 @@
                                 </div>
                                 {% endif %}
 
-                                <!-- Share News Section -->
-                                <div class="copy-link-container text-center mt-3 pt-4">
-                                    <h6 class="text-muted mb-4"><span class="bi bi-share"></span> Share News</h6>
+                            <!-- Share News Section -->
+                            <div class="copy-link-container text-center mt-3 pt-4">
+                                <button id="toggle-share" class="btn btn-outline-secondary mx-2 mb-2">
+                                    <span class="bi bi-share"></span> Share News
+                                </button>
+
+                                <!-- Copy Link Button -->
+                                <a href="#"
+                                onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/'); return false;"
+                                class="btn btn-outline-secondary mx-2 mb-2">
+                                    <span class="bi bi-link"> Copy Link </span>
+                                </a>
+
+                                <!-- Share Block: initially hidden using style -->
+                                <div id="share-block" style="display: none;" class="text-center mt-2">
+
                                     <div class="d-flex justify-content-center align-items-center flex-wrap">
-                                        <!-- Copy Link Button -->
-                                                    <a href="#"
-                                                        onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/'); return false;"
-                                                        class="btn btn-outline-secondary mx-2 mb-2">
-                                                        <span class="bi bi-link"> Copy Link </span>
-                                                    </a>
 
-                                                    <!-- Facebook Share -->
-                                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                                        target="_blank" class="btn btn-primary mx-2 mb-2"
-                                                        title="Share on Facebook">
-                                                        <i class="bi bi-facebook"></i> Facebook
-                                                    </a>
-                                                    
-                                                    <!-- Twitter Share (Brand color) -->
-                                                    <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                                        target="_blank" class="btn btn-twitter mx-2 mb-2" title="Share on Twitter">
-                                                        <i class="bi bi-twitter-x"></i> Twitter
-                                                    </a>
+                                        <!-- Facebook -->
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-primary mx-2 mb-2" title="Share on Facebook">
+                                            <i class="bi bi-facebook"></i> Facebook
+                                        </a>
 
-                                                    <!-- LinkedIn Share (Brand color) -->
-                                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                                        target="_blank" class="btn btn-linkedin mx-2 mb-2"
-                                                        title="Share on LinkedIn">
-                                                        <i class="bi bi-linkedin"></i> LinkedIn
-                                                    </a>
+                                        <!-- Twitter -->
+                                        <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-twitter mx-2 mb-2" title="Share on Twitter">
+                                            <i class="bi bi-twitter-x"></i> Twitter
+                                        </a>
 
-                                                    <!-- WhatsApp Share -->
-                                                    <a href="https://api.whatsapp.com/send?text={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                                        target="_blank" class="btn btn-success mx-2 mb-2"
-                                                        title="Share on WhatsApp">
-                                                        <i class="bi bi-whatsapp"></i> WhatsApp
-                                                    </a>
+                                        <!-- LinkedIn -->
+                                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-linkedin mx-2 mb-2" title="Share on LinkedIn">
+                                            <i class="bi bi-linkedin"></i> LinkedIn
+                                        </a>
+
+                                        <!-- WhatsApp -->
+                                        <a href="https://api.whatsapp.com/send?text={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-success mx-2 mb-2" title="Share on WhatsApp">
+                                            <i class="bi bi-whatsapp"></i> WhatsApp
+                                        </a>
                                     </div>
+                                </div>
                                 </div>
                                 <section id="blog-comments" class="blog-comments section pt-3">
                                     <hr>
@@ -329,6 +334,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
+    <!-- Toggle to display social shares when the share is clicked -->
+    <script>
+        $(document).ready(function () {
+            $('#toggle-share').click(function () {
+                $('#share-block').slideToggle();  // Smooth toggle
+            });
+        });
+        </script>
+    <!-- end of script -->
         
     <script>
         $('#commentForm').parsley();
@@ -357,7 +372,33 @@
                     }).showToast();
             }
         });
-    </script>    
+    </script>
+    
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                Toastify({
+                    text: "Link copied to clipboard!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    stopOnFocus: true
+                }).showToast();
+            }, function(err) {
+                Toastify({
+                    text: "Failed to copy link: " + err,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "linear-gradient(to right, #ff0000, #ff7f7f)",
+                    stopOnFocus: true
+                }).showToast();
+            });
+        }
+    </script>
 
 </body>
 

@@ -199,7 +199,18 @@
     <script async src="https://static.addtoany.com/menu/page.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-        
+    
+    <!-- Toggle to display social shares when the share is clicked -->
+    <script>
+        $(document).ready(function () {
+            $('.toggle-share').click(function () {
+                $(this).closest('.modal').find('.share-block').slideToggle();
+            });
+        });
+    </script>
+    <!-- end of script -->
+    
+    
     <script>
         $('#commentForm').parsley();
     </script>

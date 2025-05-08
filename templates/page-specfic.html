@@ -65,42 +65,44 @@
 
                             <!-- Share News Section -->
                             <div class="copy-link-container text-center mt-3 pt-4">
-                                <h6 class="text-muted mb-4"><span class="bi bi-share"></span> Share News</h6>
-                                <div class="d-flex justify-content-center align-items-center flex-wrap">
-                                    <!-- Copy Link Button -->
-                                    <a href="#"
-                                        onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/'); return false;"
-                                        class="btn btn-outline-secondary mx-2 mb-2">
-                                        <span class="bi bi-link"> Copy Link </span>
-                                    </a>
+                                <a href="#"
+                                onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/'); return false;"
+                                class="btn btn-outline-secondary btn-sm mx-2 mb-2">
+                                    <span class="bi bi-link"> Copy Link </span>
+                                </a>
+                                <button class="btn btn-outline-secondary btn-sm mx-2 mb-2 toggle-share">
+                                    <span class="bi bi-share"></span> Share News
+                                </button>
 
-                                    <!-- Facebook Share -->
-                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                        target="_blank" class="btn btn-primary mx-2 mb-2"
-                                        title="Share on Facebook">
-                                        <i class="bi bi-facebook"></i> Facebook
-                                    </a>
-                                    
-                                    <!-- Twitter Share (Brand color) -->
-                                    <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                        target="_blank" class="btn btn-twitter mx-2 mb-2" title="Share on Twitter">
-                                        <i class="bi bi-twitter-x"></i> Twitter
-                                    </a>
+                                <!-- Share Block (use class instead of id) -->
+                                <div class="share-block mt-3" style="display: none;">
 
-                                    <!-- LinkedIn Share (Brand color) -->
-                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                        target="_blank" class="btn btn-linkedin mx-2 mb-2"
-                                        title="Share on LinkedIn">
-                                        <i class="bi bi-linkedin"></i> LinkedIn
-                                    </a>
+                                    <div class="d-flex justify-content-center align-items-center flex-wrap">
+                                        <!-- Facebook -->
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-primary mx-2 mb-2">
+                                            <i class="bi bi-facebook"></i> Facebook
+                                        </a>
 
-                                    <!-- WhatsApp Share -->
-                                    <a href="https://api.whatsapp.com/send?text={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
-                                        target="_blank" class="btn btn-success mx-2 mb-2"
-                                        title="Share on WhatsApp">
-                                        <i class="bi bi-whatsapp"></i> WhatsApp
-                                    </a>
-                                </div>
+                                        <!-- Twitter -->
+                                        <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-twitter mx-2 mb-2">
+                                            <i class="bi bi-twitter-x"></i> Twitter
+                                        </a>
+
+                                        <!-- LinkedIn -->
+                                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-linkedin mx-2 mb-2">
+                                            <i class="bi bi-linkedin"></i> LinkedIn
+                                        </a>
+
+                                        <!-- WhatsApp -->
+                                        <a href="https://api.whatsapp.com/send?text={{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/"
+                                        target="_blank" class="btn btn-success mx-2 mb-2">
+                                            <i class="bi bi-whatsapp"></i> WhatsApp
+                                        </a>
+                                    </div>
+                                 </div>
                                 </div>
                                 <section id="blog-comments" class="blog-comments section pt-3">
                                     <hr>
