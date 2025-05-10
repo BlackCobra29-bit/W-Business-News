@@ -7,16 +7,13 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Wahid Business News</title>
-    <meta name="keywords" content=""><meta name="description" content="{{ article.content|striptags|truncatechars:155 }}">
-    <meta property="og:description" content="{{ article.content|striptags|truncatechars:155 }}">    
-    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ article.thumbnail.url }}">
-    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}/news/{{ article.slug }}/">
+    <meta name="keywords" content="">
+    <meta name="description" content="WahidBusinessNews is your go-to platform for the latest business news, updates, and essential documents.">
+    <meta property="og:image" content="{% static 'images/meta-logo.png' %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <!-- Favicons -->
     <link href="{% static 'images/site-logo.png' %}" rel="icon">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -25,6 +22,10 @@
     <!-- Vendor CSS Files -->
     <link rel="stylesheet" href="{% static 'admin_statics/bootstrap.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
 
 </head>
@@ -332,9 +333,26 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script async src="https://static.addtoany.com/menu/page.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/parsley.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     
+    <!-- Making summernote table to be responsive using bootstrap4 -->
+    <script>
+        $(document).ready(function() {
+            $('.result-item table').each(function () {
+                if (!$(this).parent().hasClass('table-responsive')) {
+                    $(this).wrap('<div class="table-responsive"></div>');
+                }
+            });
+        });
+    </script>
+    <!-- end of the script -->
+
+
     <!-- Toggle to display social shares when the share is clicked -->
     <script>
         $(document).ready(function () {
